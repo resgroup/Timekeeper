@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B3CF37A5-7456-4BE4-9DB6-C0CDD8BAA6A2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RES_Timekeeper</RootNamespace>
+    <AssemblyName>RES-Timekeeper</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>RES_Timekeeper.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packagesExpanded\EntityFramework.6.0.0\lib\net40\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packagesExpanded\EntityFramework.6.0.0\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.97.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packagesExpanded\System.Data.SQLite.Core.1.0.97.0\lib\net40\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddItemForm.Designer.cs">
+      <DependentUpon>AddItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Base\IDatabaseObject.cs" />
+    <Compile Include="EditItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditItemForm.Designer.cs">
+      <DependentUpon>EditItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ItemData.cs" />
+    <Compile Include="Data\Database.cs" />
+    <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\ItemList.cs" />
+    <Compile Include="Data\Project.cs" />
+    <Compile Include="Data\ProjectData.cs" />
+    <Compile Include="Data\ProjectList.cs" />
+    <Compile Include="EditDayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditDayForm.Designer.cs">
+      <DependentUpon>EditDayForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FillAgressoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FillAgressoForm.Designer.cs">
+      <DependentUpon>FillAgressoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IE8.cs" />
+    <Compile Include="Installer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer.Designer.cs">
+      <DependentUpon>Installer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SQLServerQueries.cs" />
+    <Compile Include="WorkorderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WorkorderForm.Designer.cs">
+      <DependentUpon>WorkorderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="WorkorderSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WorkorderSelector.Designer.cs">
+      <DependentUpon>WorkorderSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddItemForm.resx">
+      <DependentUpon>AddItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditItemForm.resx">
+      <DependentUpon>EditItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditDayForm.resx">
+      <DependentUpon>EditDayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FillAgressoForm.resx">
+      <DependentUpon>FillAgressoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkorderForm.resx">
+      <DependentUpon>WorkorderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkorderSelector.resx">
+      <DependentUpon>WorkorderSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SummaryForm.resx">
+      <DependentUpon>SummaryForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeItemControl.resx">
+      <DependentUpon>TimeItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimekeeperForm.resx">
+      <DependentUpon>TimekeeperForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\RES_Timekeeper.Data.ItemList.datasource" />
+    <None Include="Properties\DataSources\RES_Timekeeper.Data.ProjectList.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SummaryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SummaryForm.Designer.cs">
+      <DependentUpon>SummaryForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeItemControl.Designer.cs">
+      <DependentUpon>TimeItemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimekeeperForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimekeeperForm.Designer.cs">
+      <DependentUpon>TimekeeperForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimePeriodManager.cs" />
+    <Compile Include="Unit Tests\DatabaseTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.ico" />
+    <Content Include="Resources\App.ico" />
+    <Content Include="Transforms\IE8.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Resources\Paused.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\..\packagesExpanded\System.Data.SQLite.Core.1.0.97.0\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\..\..\packagesExpanded\System.Data.SQLite.Core.1.0.97.0\build\net40\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packagesExpanded\System.Data.SQLite.Core.1.0.97.0\build\net40\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packagesExpanded\System.Data.SQLite.Core.1.0.97.0\build\net40\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

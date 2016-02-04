@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuracion xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFiles>
+    <string>.\UserGuide.doc</string>
+  </SourceFiles>
+  <Compilar>true</Compilar>
+  <DirectorioDestino>.\MCP Release Notes-project</DirectorioDestino>
+  <HtmlCabecera />
+  <HtmlPie />
+  <TituloAyuda>WCW Release Notes</TituloAyuda>
+  <NivelCorte>1</NivelCorte>
+  <GenerarWeb>false</GenerarWeb>
+  <ArchivosAdicionales />
+  <AbrirProyecto>false</AbrirProyecto>
+  <DirectorioWeb>.\MCP Release Notes-web</DirectorioWeb>
+  <NivelArbolContenidos>1</NivelArbolContenidos>
+  <NivelTemasIndice>0</NivelTemasIndice>
+  <ArchivoAyuda>.\UserGuide.chm</ArchivoAyuda>
+  <CommandLine />
+  <GeneratePdf>false</GeneratePdf>
+  <PdfPath>.\MCP Release Notes.pdf</PdfPath>
+  <WebKeywords />
+  <WebDescription />
+  <WebHeaderFile />
+  <WebFooterFile />
+  <GenerateSitemap>false</GenerateSitemap>
+  <WebBase />
+  <ChangeFrequency>monthly</ChangeFrequency>
+  <WebLanguage>English</WebLanguage>
+  <ConfigurationVersion>1.6</ConfigurationVersion>
+  <FullTextSearch>false</FullTextSearch>
+  <PdfGeneration>OfficeAddin</PdfGeneration>
+  <GenerateXps>false</GenerateXps>
+  <XpsPath>.\MCP Release Notes.xps</XpsPath>
+  <GenerateJavaHelp>false</GenerateJavaHelp>
+  <JavaHelpPath>.\MCP Release Notes.jar</JavaHelpPath>
+  <HeadTagFile />
+  <ChmLocaleID>2057</ChmLocaleID>
+</Configuracion>
