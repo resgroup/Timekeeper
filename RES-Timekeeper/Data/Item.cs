@@ -48,7 +48,7 @@ namespace RES_Timekeeper.Data
             loadedItem.IsDirty = false;
             return loadedItem;
         }
-        
+
         public int ProjectID
         {
             get { return _projectID; }
@@ -162,7 +162,7 @@ namespace RES_Timekeeper.Data
 
         public bool IsDeleted
         {
-            get {return _isDeleted;}
+            get { return _isDeleted; }
             private set
             {
                 _isDeleted = value;
@@ -170,9 +170,14 @@ namespace RES_Timekeeper.Data
             }
         }
 
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+        }
+
         public int CompareTo(object obj)
         {
-            return this.StartTime.CompareTo( ((Item)obj).StartTime );
+            return this.StartTime.CompareTo(((Item)obj).StartTime);
         }
     }
 }

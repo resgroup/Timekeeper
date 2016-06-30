@@ -16,7 +16,7 @@ namespace RES_Timekeeper
         DateTime _currentDisplayDay;
         DateTime _lastDisplayDay;
         DateTime _firstDisplayDay;
-        ItemList _currentItems = new ItemList();
+        ItemList CurrentItems { get; } = new ItemList();
         ProjectList _cachedProjects = ProjectList.Load(false);
 
         public EditDayForm()
@@ -41,21 +41,13 @@ namespace RES_Timekeeper
             DisplayDay(_currentDisplayDay);
         }
 
-        public ItemList CurrentItems
-        {
-            get { return _currentItems; }
-            set { _currentItems = value; }
-        }
-        
         private void DisplayDay(DateTime date)
         {
-            Database db = new Database();
-            ItemList items = ItemList.Load(date.Date, date.Date.AddDays(1));
-            var selectedItems = items.Items.Where(i => i.Confirmed);
+            var items = ItemList.Load(date.Date, date.Date.AddDays(1));
+            var selectedItems = items.Items.Where(i => i.Confirmed).ToList();
 
-            _currentItems.Items.Clear();
-            foreach (var i in selectedItems)
-                _currentItems.Items.Add(i);
+            CurrentItems.Items.Clear();
+            selectedItems.ForEach(i => CurrentItems.Items.Add(i));
 
             _lblDate.Text = _currentDisplayDay.ToString("dddd, d MMM yyyy");
         }
@@ -64,7 +56,7 @@ namespace RES_Timekeeper
         {
             if (_currentDisplayDay > _firstDisplayDay)
             {
-                UpdateDirtyItems();
+                SaveItems();
                 _btnRight.Enabled = true;
                 _currentDisplayDay = _currentDisplayDay.AddDays(-1);
                 DisplayDay(_currentDisplayDay);
@@ -81,7 +73,7 @@ namespace RES_Timekeeper
         {
             if (_currentDisplayDay < _lastDisplayDay)
             {
-                UpdateDirtyItems();
+                SaveItems();
                 _btnLeft.Enabled = true;
                 _currentDisplayDay = _currentDisplayDay.AddDays(1);
                 DisplayDay(_currentDisplayDay);
@@ -112,8 +104,6 @@ namespace RES_Timekeeper
             }
         }
 
-
-
         private void HandleProjectButtonClick(DataGridViewCellEventArgs e)
         {
             WorkorderSelector frm = new WorkorderSelector();
@@ -121,7 +111,7 @@ namespace RES_Timekeeper
             frm.Initialise(projects);
             frm.Owner = this;
 
-            if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (frm.ShowDialog() == DialogResult.OK)
             {
                 CurrentItems.Items[e.RowIndex].ProjectID = frm.SelectedProject.ID;
 
@@ -131,13 +121,10 @@ namespace RES_Timekeeper
             }
         }
 
-        private void UpdateDirtyItems()
+        private void SaveItems()
         {
-            foreach (Item i in CurrentItems.Items)
-            {
-                if (i.IsDirty)
-                    i.Save();
-            }
+            CurrentItems.Items.ToList()
+                    .ForEach(item => item.Save());
         }
 
         private void _btnAdd_Click(object sender, EventArgs e)
@@ -151,7 +138,7 @@ namespace RES_Timekeeper
 
         private void _btnOK_Click(object sender, EventArgs e)
         {
-            UpdateDirtyItems();
+            SaveItems();
             this.Close();
         }
 
@@ -161,8 +148,8 @@ namespace RES_Timekeeper
                  e.ColumnIndex == endTimeDataGridViewTextBoxColumn.Index) &&
                 _dgvItems.Rows[e.RowIndex].DataBoundItem is Item)
             {
-                Item editItem = _dgvItems.Rows[e.RowIndex].DataBoundItem as Item;
-                EditItemForm frm = new EditItemForm(editItem);
+                var editItem = _dgvItems.Rows[e.RowIndex].DataBoundItem as Item;
+                var frm = new EditItemForm(editItem);
                 frm.ShowDialog();
             }
         }
@@ -173,6 +160,19 @@ namespace RES_Timekeeper
             {
                 HandleProjectButtonClick(e);
             }
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            var items = _dgvItems.SelectedRows
+                                .OfType<DataGridViewRow>()
+                                .Select(row => row.DataBoundItem)
+                                .OfType<Item>()
+                                .ToList();
+
+            items.ForEach(item => item.MarkDeleted());
+            this.SaveItems();
+            DisplayDay(_currentDisplayDay);
         }
     }
 }

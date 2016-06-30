@@ -53,7 +53,7 @@ namespace RES_Timekeeper
                 catch { }
             }
 
-            e.SortResult = string.Compare(a,b);
+            e.SortResult = string.Compare(a, b);
             e.Handled = true;
         }
 
@@ -68,14 +68,27 @@ namespace RES_Timekeeper
                     return 1;
             }
 
-            string[] toksA = a.Split(new char[1] { '-' });
-            string[] toksB = b.Split(new char[1] { '-' });
+            var toksA = a.Split(new char[1] { '-' })
+                    .Select(ss =>
+                    {
+                        int i;
+                        int.TryParse(ss, out i);
+                        return i;
+                    }).ToList(); ;
 
-            for (int i=0; i<3; i++)
+            var toksB = b.Split(new char[1] { '-' })
+                    .Select(ss =>
+                    {
+                        int i;
+                        int.TryParse(ss, out i);
+                        return i;
+                    }).ToList(); ;
+
+            for (int i = 0; i < 3; i++)
             {
                 if (toksA[i] != toksB[i])
                 {
-                    return System.Convert.ToInt32(toksA[i]) - System.Convert.ToInt32(toksB[i]);
+                    return toksA[i] - toksB[i];
                 }
             }
 
@@ -95,7 +108,7 @@ namespace RES_Timekeeper
                 _selectedProject = (Project)_dgvProjects.SelectedRows[0].Tag;
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();
-            }           
+            }
         }
 
         private void _btnCancel_Click(object sender, EventArgs e)
@@ -103,7 +116,7 @@ namespace RES_Timekeeper
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Close();
         }
-        
+
         private void _dgvProjects_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -203,6 +216,14 @@ namespace RES_Timekeeper
         private void _rbShowRecent_CheckedChanged(object sender, EventArgs e)
         {
             FillGridWithRecent();
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            foreach (var row in _dgvProjects.SelectedRows)
+            {
+
+            }
         }
     }
 }

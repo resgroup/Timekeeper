@@ -52,7 +52,7 @@ namespace RES_Timekeeper
         {
             for (int i = 0; i < _dataGridView.RowCount; i++)
             {
-                if (_dataGridView.Rows[i].Cells[1].Value!= null  &&  _dataGridView.Rows[i].Cells[1].Value.ToString() == "LUNCH")
+                if (_dataGridView.Rows[i].Cells[1].Value != null && _dataGridView.Rows[i].Cells[1].Value.ToString() == "LUNCH")
                     _dataGridView.Rows[i].Cells[1].ReadOnly = true;
             }
         }
@@ -70,8 +70,6 @@ namespace RES_Timekeeper
 
         private void _btnGetFromAgresso_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, "RES-Timekeeper will attempt to fetch new workorder codes and descriptions from Agresso. Note that only new workorders will be added. You will have to manually transfer any other changes.\n\nPlease open the Agresso website and navigate to the Timesheet Entry page before clicking OK.", "Get new workorders from Agresso", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-
             IHTMLDocument3 doc3 = null;
             try
             {
@@ -85,7 +83,7 @@ namespace RES_Timekeeper
                     IEnumerable<string> currentProjectCodes = Projects.Projects.Select(p => p.Code.ToUpper());
                     IEnumerable<Tuple<string, string>> allCodesAndDescriptions = IE8.GetProjectCodesAndDescriptions(doc3);
                     List<Tuple<string, string>> toAdd = new List<Tuple<string, string>>();
-            
+
                     if (currentProjectCodes.Count() == 0)
                     {
                         toAdd.AddRange(allCodesAndDescriptions);
@@ -137,6 +135,16 @@ namespace RES_Timekeeper
             {
                 _lastProjectCode = _dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
             }
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            var projects = this._dataGridView.SelectedRows.OfType<DataGridViewRow>()
+                    .Select(row => row.DataBoundItem)
+                    .OfType<Project>()
+                    .ToList();
+
+            projects.ForEach(project => project.MarkDeleted());
         }
     }
 }

@@ -81,28 +81,6 @@ namespace RES_Timekeeper.Data
             {
                 newList.Items.Add(Item.CreateFromStore(id));
             }
-
-            // Need to sanitize the data to ensure overlaps in the database don't make it back to the UI
-            // Known overlaps have occured when people have run multiple copies by accident
-            /*int i = 0;
-            while (i < newList.Count-1)
-            {
-                if (newList.Items[i].StartTime < newList.Items[i+1].EndTime)
-                {
-                    Item replacement = Item.CreateNewItem(newList.Items[i+1].StartTime, newList.Items[i].StartTime);
-                    replacement.Confirmed = newList.Items[i+1].Confirmed;
-                    replacement.Notes = newList.Items[i+1].Notes;
-                    replacement.ProjectID = newList.Items[i+1].ProjectID;
-
-                    newList.Items[i+1] = replacement;
-                    if (newList.Items[i+1].EndTime <= newList.Items[i+1].StartTime)
-                    {
-                        newList.Items.RemoveAt(i+1);
-                    }
-                }
-                i++;
-            }*/
-
             return newList;
         }
     }

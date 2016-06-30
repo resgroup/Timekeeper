@@ -3,73 +3,82 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
+using System.IO;
 
 namespace RES_Timekeeper.Data
 {
     public class Database
     {
-        public Database()
+        public string DatabasePath { get; }
+
+        public Database() : this(GetDefaultDatabase()) { }
+        public Database(string databasePath)
+        {
+            this.DatabasePath = databasePath;
+            if (!File.Exists(this.DatabasePath))
+            {
+                CreateDatabase();
+            }
+        }
+
+        public static string GetDefaultDatabase()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 #if DEBUG
-            string filename = System.IO.Path.Combine(folder, "RES-TimekeeperTEST.db");
+            string filename = Path.Combine(folder, "RES-TimekeeperTEST.db");
 #else
             string filename = System.IO.Path.Combine(folder, "RES-Timekeeper.db");
 #endif
-            Initialise(filename);
-        }
-
-        public Database(string filename)
-        {
-            Initialise(filename);
+            return filename;
         }
 
         public IEnumerable<ProjectData> GetMostRecentUsedProjects()
         {
-            List<ProjectData> projects = new List<ProjectData>();
-            using (SQLiteConnection connection = GetAndOpenConnection())
-            {
-                string sqlText = "SELECT DISTINCT ID, Code, Title FROM tblProjects P ";
-                sqlText += "INNER JOIN tblItems I ON P.ID=I.ProjectID WHERE P.Visible=1 ";
-                sqlText += "ORDER BY I.StartTime DESC LIMIT 10;";
+            string sqlText = @"SELECT DISTINCT ID, Code, Title FROM tblProjects P 
+                                    INNER JOIN tblItems I 
+                                        ON P.ID=I.ProjectID WHERE P.Visible=1
+                               ORDER BY I.StartTime DESC LIMIT 10;
+            ";
 
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
+
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
+            using (var reader = command.ExecuteReader())
+            {
+                var projects = new List<ProjectData>();
+                while (reader.Read())
                 {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            projects.Add(new ProjectData(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), true));
-                        }
-                    }
+                    projects.Add(new ProjectData(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), true));
                 }
+
+                return projects;
             }
-            return projects;
         }
 
-            
+
         public IEnumerable<ProjectData> GetProjects(bool visibleProjectsOnly)
         {
-            List<ProjectData> projects = new List<ProjectData>();
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText;
+            if (visibleProjectsOnly)
             {
-                string sqlText;
-                if (visibleProjectsOnly)
-                    sqlText = string.Format("SELECT ID, Code, Title, Visible FROM tblProjects WHERE Visible = 1 ORDER BY CODE");
-                else
-                    sqlText = string.Format("SELECT ID, Code, Title, Visible FROM tblProjects ORDER BY CODE");
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            projects.Add(new ProjectData(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetBoolean(3)));
-                        }
-                    }
-                }
+                sqlText = string.Format("SELECT ID, Code, Title, Visible FROM tblProjects WHERE Visible = 1 ORDER BY CODE");
             }
-            return projects;
+            else
+            {
+                sqlText = string.Format("SELECT ID, Code, Title, Visible FROM tblProjects ORDER BY CODE");
+            }
+
+            using (var connection = GetAndOpenConnection())
+            using (var cmd = new SQLiteCommand(sqlText, connection))
+            using (var reader = cmd.ExecuteReader())
+            {
+                var projects = new List<ProjectData>();
+                while (reader.Read())
+                {
+                    projects.Add(new ProjectData(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetBoolean(3)));
+                }
+                return projects;
+            }
         }
 
         private static DateTime GetDateTime(string val)
@@ -86,80 +95,74 @@ namespace RES_Timekeeper.Data
         {
             return DateTime.FromFileTime(val);
         }
-        
+
         public void CorrectStringDates()
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItemsOLD";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
+            using (var reader = command.ExecuteReader())
             {
-                string sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItemsOLD";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
+                while (reader.Read())
                 {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int projectID = reader.GetInt32(0);
-                            string startStr = reader.GetString(1);
-                            string endStr = reader.GetString(2);
-                            DateTime startDT = GetDateTime(startStr);
-                            DateTime endDT = GetDateTime(endStr);
-                            bool confirmed = reader.GetBoolean(3);
-                            string notes = reader.GetString(4);
+                    int projectID = reader.GetInt32(0);
+                    string startStr = reader.GetString(1);
+                    string endStr = reader.GetString(2);
+                    DateTime startDT = GetDateTime(startStr);
+                    DateTime endDT = GetDateTime(endStr);
+                    bool confirmed = reader.GetBoolean(3);
+                    string notes = reader.GetString(4);
 
-                            InsertItem(connection, projectID, startDT, endDT, confirmed, notes);
-                        }
-                    }
+                    InsertItem(connection, projectID, startDT, endDT, confirmed, notes);
                 }
             }
         }
 
         public IEnumerable<ItemData> GetItems(DateTime startTime, DateTime endTime)
         {
-            List<ItemData> items = new List<ItemData>();
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems WHERE StartTime>=@startTime AND EndTime<=@endTime";
+
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems WHERE StartTime>=@startTime AND EndTime<=@endTime";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
+                command.Parameters.AddWithValue("@startTime", startTime.ToFileTime());
+                command.Parameters.AddWithValue("@endTime", endTime.ToFileTime());
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("@startTime", startTime.ToFileTime());
-                    cmd.Parameters.AddWithValue("@endTime", endTime.ToFileTime());
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    var items = new List<ItemData>();
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            DateTime start = GetDateTime(reader.GetInt64(1));
-                            DateTime end = GetDateTime(reader.GetInt64(2));
-                            items.Add(new ItemData(reader.GetInt32(0), start, end, reader.GetBoolean(3), reader.GetString(4)));
-                        }
+                        var start = GetDateTime(reader.GetInt64(1));
+                        var end = GetDateTime(reader.GetInt64(2));
+                        items.Add(new ItemData(reader.GetInt32(0), start, end, reader.GetBoolean(3), reader.GetString(4)));
                     }
+                    return items;
                 }
             }
-
-            return items;
         }
 
         public IEnumerable<ItemData> GetItems(bool unconfirmedItemsOnly)
         {
-            List<ItemData> items = new List<ItemData>();
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText;
+            if (unconfirmedItemsOnly)
             {
-                string sqlText;
-                if (unconfirmedItemsOnly)
-                    sqlText = string.Format("SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems WHERE Confirmed = 0 ORDER BY EndTime DESC");
-                else
-                    sqlText = string.Format("SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems ORDER BY EndTime DESC");
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            items.Add(new ItemData(reader.GetInt32(0), GetDateTime(reader.GetInt64(1)), GetDateTime(reader.GetInt64(2)), reader.GetBoolean(3), reader.GetString(4)));
-                        }
-                    }
-                }
+                sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems WHERE Confirmed = 0 ORDER BY EndTime DESC";
             }
-            return items;
+            else
+            {
+                sqlText = "SELECT ProjectID, StartTime, EndTime, Confirmed, Notes FROM tblItems ORDER BY EndTime DESC";
+            }
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
+            using (var reader = command.ExecuteReader())
+            {
+                var items = new List<ItemData>();
+                while (reader.Read())
+                {
+                    items.Add(new ItemData(reader.GetInt32(0), GetDateTime(reader.GetInt64(1)), GetDateTime(reader.GetInt64(2)), reader.GetBoolean(3), reader.GetString(4)));
+                }
+                return items;
+            }
         }
 
 
@@ -175,17 +178,17 @@ namespace RES_Timekeeper.Data
 
         private ItemData GetItem(string sqlCommand)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlCommand, connection))
+            using (var reader = command.ExecuteReader())
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlCommand, connection))
+                if (reader.Read())
                 {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                            return new ItemData(reader.GetInt32(0), GetDateTime(reader.GetInt64(1)), GetDateTime(reader.GetInt64(2)), reader.GetBoolean(3), reader.GetString(4));
-                        else
-                            return null;
-                    }
+                    return new ItemData(reader.GetInt32(0), GetDateTime(reader.GetInt64(1)), GetDateTime(reader.GetInt64(2)), reader.GetBoolean(3), reader.GetString(4));
+                }
+                else
+                {
+                    return null;
                 }
             }
         }
@@ -193,53 +196,47 @@ namespace RES_Timekeeper.Data
 
         public void InsertProject(string code, string title)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "INSERT INTO tblProjects VALUES (NULL, @code, @title, 1)";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "INSERT INTO tblProjects VALUES (NULL, @code, @title, 1)";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    cmd.Parameters.AddWithValue("@code", code);
-                    cmd.Parameters.AddWithValue("@title", title);
+                command.Parameters.AddWithValue("@code", code);
+                command.Parameters.AddWithValue("@title", title);
 
-                    cmd.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public void UpdateProject(int ID, string code, string title, bool visible)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "UPDATE tblProjects SET Code=@code, Title=@title, Visible=@visible WHERE ID=@ID";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "UPDATE tblProjects SET Code=@code, Title=@title, Visible=@visible WHERE ID=@ID";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    cmd.Parameters.AddWithValue("@code", code);
-                    cmd.Parameters.AddWithValue("@title", title);
-                    cmd.Parameters.AddWithValue("@visible", visible);
-                    cmd.Parameters.AddWithValue("@ID", ID);
+                command.Parameters.AddWithValue("@code", code);
+                command.Parameters.AddWithValue("@title", title);
+                command.Parameters.AddWithValue("@visible", visible);
+                command.Parameters.AddWithValue("@ID", ID);
 
-                    cmd.ExecuteNonQuery();
-                } 
+                command.ExecuteNonQuery();
             }
         }
 
         public void DeleteProject(int ID)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "DELETE FROM tblProjects WHERE ID=@ID";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "DELETE FROM tblProjects WHERE ID=@ID";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    cmd.Parameters.AddWithValue("@ID", ID);
+                command.Parameters.AddWithValue("@ID", ID);
 
-                    cmd.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public void InsertItem(int projectID, DateTime start, DateTime end, bool confirmed, string notes)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            using (var connection = GetAndOpenConnection())
             {
                 InsertItem(connection, projectID, start, end, confirmed, notes);
             }
@@ -248,70 +245,53 @@ namespace RES_Timekeeper.Data
         public void InsertItem(SQLiteConnection connection, int projectID, DateTime start, DateTime end, bool confirmed, string notes)
         {
             string sqlText = "INSERT INTO tblItems VALUES (@projectID, @startTime, @endTime, @confirmed, @notes)";
-            using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                cmd.Parameters.AddWithValue("@projectID", projectID);
-                cmd.Parameters.AddWithValue("@startTime", start.ToFileTime());
-                cmd.Parameters.AddWithValue("@endTime", end.ToFileTime());
-                cmd.Parameters.AddWithValue("@confirmed", confirmed);
-                cmd.Parameters.AddWithValue("@notes", notes == null ? string.Empty : notes);
+                command.Parameters.AddWithValue("@projectID", projectID);
+                command.Parameters.AddWithValue("@startTime", start.ToFileTime());
+                command.Parameters.AddWithValue("@endTime", end.ToFileTime());
+                command.Parameters.AddWithValue("@confirmed", confirmed);
+                command.Parameters.AddWithValue("@notes", notes == null ? string.Empty : notes);
 
-                cmd.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
         public void UpdateItem(int projectID, DateTime originalStart, DateTime originalEnd, DateTime newStart, DateTime newEnd, bool confirmed, string notes)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "UPDATE tblItems SET ProjectID=@projectID, Confirmed=@confirmed, Notes=@notes, StartTime=@startTime, EndTime=@endTime WHERE StartTime=@originalStartTime AND EndTime=@originalEndTime";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "UPDATE tblItems SET ProjectID=@projectID, Confirmed=@confirmed, Notes=@notes, StartTime=@startTime, EndTime=@endTime WHERE StartTime=@originalStartTime AND EndTime=@originalEndTime";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    cmd.Parameters.AddWithValue("@projectID", projectID);
-                    cmd.Parameters.AddWithValue("@originalStartTime", originalStart.ToFileTime());
-                    cmd.Parameters.AddWithValue("@originalEndTime", originalEnd.ToFileTime());
-                    cmd.Parameters.AddWithValue("@startTime", newStart.ToFileTime());
-                    cmd.Parameters.AddWithValue("@endTime", newEnd.ToFileTime());
-                    cmd.Parameters.AddWithValue("@confirmed", confirmed);
-                    cmd.Parameters.AddWithValue("@notes", notes == null ? string.Empty : notes);
+                command.Parameters.AddWithValue("@projectID", projectID);
+                command.Parameters.AddWithValue("@originalStartTime", originalStart.ToFileTime());
+                command.Parameters.AddWithValue("@originalEndTime", originalEnd.ToFileTime());
+                command.Parameters.AddWithValue("@startTime", newStart.ToFileTime());
+                command.Parameters.AddWithValue("@endTime", newEnd.ToFileTime());
+                command.Parameters.AddWithValue("@confirmed", confirmed);
+                command.Parameters.AddWithValue("@notes", notes == null ? string.Empty : notes);
 
-                    cmd.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public void DeleteItem(DateTime startTime, DateTime endTime)
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            string sqlText = "DELETE FROM tblItems WHERE StartTime=@startTime AND EndTime=@endTime";
+            using (var connection = GetAndOpenConnection())
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                string sqlText = "DELETE FROM tblItems WHERE StartTime=@startTime AND EndTime=@endTime";
-                using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
-                {
-                    cmd.Parameters.AddWithValue("@startTime", startTime.ToFileTime());
-                    cmd.Parameters.AddWithValue("@endTime", endTime.ToFileTime());
+                command.Parameters.AddWithValue("@startTime", startTime.ToFileTime());
+                command.Parameters.AddWithValue("@endTime", endTime.ToFileTime());
 
-                    cmd.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
-        private void Initialise(string filename)
-        {
-            Filename = filename;
-
-            if (!System.IO.File.Exists(filename))
-                CreateDatabase();
-        }
-
-        private string Filename
-        {
-            get;
-            set;
-        }
 
         private void CreateDatabase()
         {
-            using (SQLiteConnection connection = GetAndOpenConnection())
+            using (var connection = GetAndOpenConnection())
             {
                 CreateProjectsTable(connection);
                 CreateItemsTable(connection);
@@ -320,32 +300,31 @@ namespace RES_Timekeeper.Data
 
         private void CreateProjectsTable(SQLiteConnection connection)
         {
-            string sqlText = "CREATE TABLE tblProjects(ID INTEGER PRIMARY KEY, Code nvarchar(16) NOT NULL, Title nvarchar(256) NOT NULL, Visible Bit NOT NULL)";
-            ExecuteNonQuery(sqlText, connection);
+            string sqlCreate = "CREATE TABLE tblProjects(ID INTEGER PRIMARY KEY, Code nvarchar(16) NOT NULL, Title nvarchar(256) NOT NULL, Visible Bit NOT NULL)";
+            ExecuteNonQuery(sqlCreate, connection);
 
-            sqlText = string.Format("INSERT INTO tblProjects VALUES (NULL, 'LUNCH', 'Non working time', 1)");
-            ExecuteNonQuery(sqlText, connection);
+            var sqlInsertDefaultProject = string.Format("INSERT INTO tblProjects VALUES (NULL, 'LUNCH', 'Non working time', 1)");
+            ExecuteNonQuery(sqlInsertDefaultProject, connection);
         }
 
         private void CreateItemsTable(SQLiteConnection connection)
         {
             string sqlText = "CREATE TABLE tblItems(ProjectID INTEGER NOT NULL, StartTime INTEGER NOT NULL, EndTime INTEGER NOT NULL, Confirmed Bit NOT NULL, Notes nvarchar(2000) NOT NULL, CONSTRAINT PK PRIMARY KEY (StartTime, EndTime), FOREIGN KEY(ProjectID) REFERENCES tblProjects(ID))";
-
             ExecuteNonQuery(sqlText, connection);
         }
 
         private SQLiteConnection GetAndOpenConnection()
         {
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Filename);
+            var connection = new SQLiteConnection("Data Source=" + DatabasePath);
             connection.Open();
             return connection;
         }
 
         private void ExecuteNonQuery(string sqlText, SQLiteConnection connection)
         {
-            using (SQLiteCommand cmd = new SQLiteCommand(sqlText, connection))
+            using (var command = new SQLiteCommand(sqlText, connection))
             {
-                cmd.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
     }

@@ -22,7 +22,7 @@ namespace RES_Timekeeper
         public delegate int EnumProc(IntPtr hWnd, ref IntPtr lParam);
 
         [DllImport("user32.dll")]
-        public static extern int EnumChildWindows(IntPtr hWndParent, EnumProc lpEnumFunc, ref  IntPtr lParam);
+        public static extern int EnumChildWindows(IntPtr hWndParent, EnumProc lpEnumFunc, ref IntPtr lParam);
         [DllImport("user32.dll", EntryPoint = "RegisterWindowMessageA")]
         public static extern int RegisterWindowMessage(string lpString);
         [DllImport("user32.dll", EntryPoint = "SendMessageTimeoutA")]
@@ -93,12 +93,12 @@ namespace RES_Timekeeper
         /// <summary>
         /// Returns an enumeration of tuples of <workorder code, description>
         /// </summary>
-        public static IEnumerable<Tuple<string,string>> GetProjectCodesAndDescriptions(IHTMLDocument3 doc3)
+        public static IEnumerable<Tuple<string, string>> GetProjectCodesAndDescriptions(IHTMLDocument3 doc3)
         {
             return GetAllProjectCodesAndDescriptions(doc3).Distinct();
         }
 
-        
+
         /// <summary>
         /// Returns an enumeration of tuples of <workorder code, description>
         /// </summary>
@@ -173,7 +173,7 @@ namespace RES_Timekeeper
         {
             // Iterate over all of the INPUT elements to find those wanting the project hours
             IHTMLElementCollection allInputs = doc3.getElementsByTagName("input");
-            for (int i= 0;i < allInputs.length; i++)
+            for (int i = 0; i < allInputs.length; i++)
             {
                 // We're looking for an INPUT whose id contains "reg_value" and not "IsDirty"
                 // this is enough to get the INPUTS for the hours
@@ -185,7 +185,7 @@ namespace RES_Timekeeper
                     string id = e.id.Substring(pos + 9);
                     if (char.IsDigit(id[0]))
                     {
-                        int index = int.Parse(id.Substring(0,1)) + 1;
+                        int index = int.Parse(id.Substring(0, 1)) + 1;
                         Color originalColour = dgvText.Rows[rowIndex].Cells[index].Style.BackColor;
                         dgvText.Rows[rowIndex].Cells[index].Style.BackColor = Color.Gold;
                         e.click();
@@ -215,11 +215,11 @@ namespace RES_Timekeeper
                 }
                 Marshal.ReleaseComObject(e);
             }
-            Marshal.ReleaseComObject(allInputs);            
+            Marshal.ReleaseComObject(allInputs);
         }
 
-        
-        
+
+
         /// <summary>
         /// Selects a line in the Agresso webpage using either the code and description, or just the code 
         /// if the description is empty.
@@ -272,7 +272,7 @@ namespace RES_Timekeeper
             {
                 // get a list of all TD elements and find those whose text is the project code we want.
                 allTableCells = doc3.getElementsByTagName("td");
-                for (int i=0; i<allTableCells.length; i++)
+                for (int i = 0; i < allTableCells.length; i++)
                 {
                     try
                     {
@@ -342,8 +342,11 @@ namespace RES_Timekeeper
 
                 if (frames != null)
                 {
-                    // IHTMLDocument3 result = frames.item(0).document as IHTMLDocument3;  // Old Agresso
-                    return frames.item(0).document.frames.item(0).document as IHTMLDocument3; // New Agresso
+                    var truc = frames.item(0);
+                    var truc1 = truc.document;
+                    var truc2 = truc1.frames;
+                    var truc3 = truc2.item(0);
+                    return truc3.document as IHTMLDocument3;
                 }
 
                 return null;

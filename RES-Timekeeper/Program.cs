@@ -37,10 +37,7 @@ namespace RES_Timekeeper
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 LogSession();
-                //if (IsUserAnAdministrator())
-                //    CheckForNewVersion();
-
-                MainForm mForm = new MainForm();
+                var mainForm = new MainForm();
                 Application.Run();
             }
         }
@@ -60,42 +57,5 @@ namespace RES_Timekeeper
 #endif
             }
         }
-
-
-        /*private static void CheckForNewVersion()
-        {
-            // Attempt to see if there is a new version, but don't complain if we're not on the RES Network
-            try
-            {
-                string availableVersion;
-                string thisVersion;
-                if (!SQLServerQueries.IsLatestVersion(out thisVersion, out availableVersion))
-                {
-                    if (MessageBox.Show("A newer version of RES-Timekeeper is available. Do you want to install it? Your version of Timekeeper is " + thisVersion + ", the newer version is " + availableVersion, "New version available", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                    {
-                        System.Diagnostics.Process.Start("X:\\Exe\\RES-Timekeeper\\RES-Timekeeper Installer.msi");
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                MessageBox.Show("Error in version checking\n" + ex.ToString(), "Session logging", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
-            }
-        }*/
-
-        /*private static bool IsUserAnAdministrator()
-        {
-            using (PrincipalContext pc = new PrincipalContext(ContextType.Machine, null))
-            {
-                UserPrincipal up = UserPrincipal.Current;
-                GroupPrincipal gp = GroupPrincipal.FindByIdentity(pc, "S-1-5-32-544");
-                if (up.IsMemberOf(gp))
-                    return true;
-            }
-            return false;
-        }*/
     }
 }

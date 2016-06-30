@@ -42,19 +42,19 @@
             this._dgvItems = new System.Windows.Forms.DataGridView();
             this.projectCodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProjButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this._btnAdd = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
             this.startTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.endTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.notesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this._itemListBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this._btnAdd = new System.Windows.Forms.Button();
-            this._lblHowToEdit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._dgvItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._itemListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // _lblDate
             // 
-            this._lblDate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this._lblDate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this._lblDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblDate.Location = new System.Drawing.Point(57, 9);
@@ -102,8 +102,8 @@
             // _dgvItems
             // 
             this._dgvItems.AllowUserToDeleteRows = false;
-            this._dgvItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this._dgvItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this._dgvItems.AutoGenerateColumns = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -142,7 +142,6 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this._dgvItems.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this._dgvItems.RowHeadersVisible = false;
             this._dgvItems.Size = new System.Drawing.Size(400, 287);
             this._dgvItems.TabIndex = 6;
             this._dgvItems.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._dgvItems_CellContentClick);
@@ -164,6 +163,30 @@
             this.colProjButton.MinimumWidth = 20;
             this.colProjButton.Name = "colProjButton";
             this.colProjButton.Width = 20;
+            // 
+            // _btnAdd
+            // 
+            this._btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this._btnAdd.Location = new System.Drawing.Point(12, 347);
+            this._btnAdd.Name = "_btnAdd";
+            this._btnAdd.Size = new System.Drawing.Size(75, 23);
+            this._btnAdd.TabIndex = 7;
+            this._btnAdd.Text = "Add Item";
+            this._btnAdd.UseVisualStyleBackColor = true;
+            this._btnAdd.Click += new System.EventHandler(this._btnAdd_Click);
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.deleteButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.deleteButton.Location = new System.Drawing.Point(93, 347);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.TabIndex = 8;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
             // startTimeDataGridViewTextBoxColumn
             // 
@@ -198,37 +221,13 @@
             // 
             this._itemListBindingSource.DataSource = typeof(RES_Timekeeper.Data.ItemList);
             // 
-            // _btnAdd
-            // 
-            this._btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this._btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this._btnAdd.Location = new System.Drawing.Point(12, 347);
-            this._btnAdd.Name = "_btnAdd";
-            this._btnAdd.Size = new System.Drawing.Size(75, 23);
-            this._btnAdd.TabIndex = 7;
-            this._btnAdd.Text = "Add Item";
-            this._btnAdd.UseVisualStyleBackColor = true;
-            this._btnAdd.Click += new System.EventHandler(this._btnAdd_Click);
-            // 
-            // _lblHowToEdit
-            // 
-            this._lblHowToEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._lblHowToEdit.Location = new System.Drawing.Point(104, 345);
-            this._lblHowToEdit.Name = "_lblHowToEdit";
-            this._lblHowToEdit.Size = new System.Drawing.Size(217, 27);
-            this._lblHowToEdit.TabIndex = 8;
-            this._lblHowToEdit.Text = "You can edit the start and end times of a period by double clicking on the times." +
-    "";
-            this._lblHowToEdit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // EditDayForm
             // 
             this.AcceptButton = this._btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 382);
-            this.Controls.Add(this._lblHowToEdit);
+            this.ClientSize = new System.Drawing.Size(432, 393);
+            this.Controls.Add(this.deleteButton);
             this.Controls.Add(this._btnAdd);
             this.Controls.Add(this._dgvItems);
             this.Controls.Add(this._btnOK);
@@ -260,6 +259,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn endTimeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn notesDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button _btnAdd;
-        private System.Windows.Forms.Label _lblHowToEdit;
+        private System.Windows.Forms.Button deleteButton;
     }
 }
