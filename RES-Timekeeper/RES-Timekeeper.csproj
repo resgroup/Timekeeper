@@ -104,7 +104,6 @@
     <Compile Include="AddItemForm.Designer.cs">
       <DependentUpon>AddItemForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Base\IDatabaseObject.cs" />
     <Compile Include="EditItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,7 +111,7 @@
       <DependentUpon>EditItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\ItemData.cs" />
-    <Compile Include="Data\Database.cs" />
+    <Compile Include="Data\DataService.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\ItemList.cs" />
     <Compile Include="Data\Project.cs" />
@@ -130,20 +129,14 @@
     <Compile Include="FillAgressoForm.Designer.cs">
       <DependentUpon>FillAgressoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IE8.cs" />
-    <Compile Include="Installer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Installer.Designer.cs">
-      <DependentUpon>Installer.cs</DependentUpon>
-    </Compile>
+    <Compile Include="InternetExplorerUtilities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SQLServerQueries.cs" />
+    <Compile Include="SessionLogger.cs" />
     <Compile Include="WorkorderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,9 +183,6 @@
     <EmbeddedResource Include="SummaryForm.resx">
       <DependentUpon>SummaryForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimeItemControl.resx">
-      <DependentUpon>TimeItemControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TimekeeperForm.resx">
       <DependentUpon>TimekeeperForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -223,12 +213,6 @@
     <Compile Include="SummaryForm.Designer.cs">
       <DependentUpon>SummaryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimeItemControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimeItemControl.Designer.cs">
-      <DependentUpon>TimeItemControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="TimekeeperForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,7 +220,6 @@
       <DependentUpon>TimekeeperForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TimePeriodManager.cs" />
-    <Compile Include="Unit Tests\DatabaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />

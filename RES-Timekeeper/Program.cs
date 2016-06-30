@@ -48,7 +48,7 @@ namespace RES_Timekeeper
             // Attempt to log the session, but don't complain if we're not on the RES Network
             try
             {
-                SQLServerQueries.LogSession();
+                SessionLogger.Log("Server=KL-SQL-001;DataBase=RESSoftware;Integrated Security=SSPI", softwareId: 1310);
             }
             catch (Exception ex)
             {

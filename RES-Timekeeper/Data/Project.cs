@@ -2,27 +2,73 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RES_Timekeeper.Base;
 
 namespace RES_Timekeeper.Data
 {
-    public class Project : IDatabaseObject
+    public class Project
     {
         private bool _isDeleted = false;
-        private int _projectID;
-        private string _projectCode;
-        private string _projectTitle;
-        private bool _projectVisible;
 
         public const int LUNCH_PROJECT_ID = 1;
         public const string LUNCH_PROJECT_NAME = "LUNCH";
 
-        public Project()
+        public int Id { get; }
+
+        private string _code;
+        public string Code
         {
+            get { return _code; }
+            set
+            {
+                _code = value;
+                IsDirty = true;
+            }
+        }
+
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                IsDirty = true;
+            }
+        }
+
+        private bool _visible;
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                IsDirty = true;
+            }
+        }
+
+        public bool IsNew { get; private set; }
+
+        public bool IsDirty { get; private set; }
+
+        public bool IsDeleted
+        {
+            get { return _isDeleted; }
+            private set
+            {
+                IsDirty = true;
+                _isDeleted = true;
+            }
+        }
+        public ProjectData Data => new ProjectData(Id, Code, Title, Visible);
+
+        public Project() : this(-1) { }
+        public Project(int id)
+        {
+            this.Id = id;
             IsNew = true;
             IsDirty = true;
 
-            ID = -1;
             Code = string.Empty;
             Title = string.Empty;
             Visible = true;
@@ -30,14 +76,14 @@ namespace RES_Timekeeper.Data
 
         public static Project CreateFromStore(ProjectData data)
         {
-            Project loadedProject = new Project();
-            loadedProject.ID = data.ID;
-            loadedProject.Code = data.Code.Trim();
-            loadedProject.Title = data.Title.Trim();
-            loadedProject.Visible = data.Visible;
-            loadedProject.IsNew = false;
-            loadedProject.IsDirty = false;
-            return loadedProject;
+            return new Project(data.ID)
+            {
+                Code = data.Code.Trim(),
+                Title = data.Title.Trim(),
+                Visible = data.Visible,
+                IsNew = false,
+                IsDirty = false
+            };
         }
 
         public void MarkDeleted()
@@ -46,102 +92,25 @@ namespace RES_Timekeeper.Data
             IsDeleted = true;
         }
 
-        public int ID
-        {
-            get
-            {
-                return _projectID;
-            }
-            private set
-            {
-                _projectID = value;
-            }
-        }
-
-        public string Code
-        {
-            get
-            {
-                return _projectCode;
-            }
-            set
-            {
-                _projectCode = value;
-                IsDirty = true;
-            }
-        }
-
-        public string Title
-        {
-            get
-            {
-                return _projectTitle;
-            }
-            set
-            {
-                _projectTitle = value;
-                IsDirty = true;
-            }
-        }
-
-        public bool Visible
-        {
-            get
-            {
-                return _projectVisible;
-            }
-            set
-            {
-                _projectVisible = value;
-                IsDirty = true;
-            }
-        }
-        
-        
-        public bool IsNew
-        {
-            get;
-            private set;
-        }
-
-        public bool IsDirty
-        {
-            get;
-            private set;
-        }
-
-        public bool IsDeleted
-        {
-            get
-            {
-                return _isDeleted;
-            }
-            private set
-            {
-                IsDirty = true;
-                _isDeleted = true;
-            }
-        }
 
         public void Save()
         {
             if (IsDirty)
             {
-                Database db = new Database();
+                var database = new DataService();
                 if (IsNew)
                 {
-                    db.InsertProject(Code, Title);
+                    database.InsertProject(Code, Title);
                     IsNew = false;
                 }
                 else if (IsDeleted)
                 {
-                    db.DeleteProject(ID);
+                    database.DeleteProject(Id);
                 }
                 else
                 {
-                    db.UpdateProject(ID, Code, Title, Visible);
+                    database.UpdateProject(this.Data);
                 }
-
                 IsDirty = false;
             }
         }

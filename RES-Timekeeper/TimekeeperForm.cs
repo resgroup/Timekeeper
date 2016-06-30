@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
-using RES_Timekeeper.Base;
 using RES_Timekeeper.Data;
 using System.Runtime.InteropServices;
 
@@ -33,7 +31,7 @@ namespace RES_Timekeeper
         private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll", EntryPoint="PostMessage")]
+        [DllImport("user32.dll", EntryPoint = "PostMessage")]
         public static extern int PostMessage(IntPtr WindowHandle, int Command, int Data, int ID);
 
 
@@ -71,7 +69,7 @@ namespace RES_Timekeeper
             UpdateDisplay();
         }
 
-        
+
         public void DisplayNewUnconfirmedItem(Item newItem)
         {
             _unconfirmedItems.Items.Insert(0, newItem);
@@ -100,7 +98,7 @@ namespace RES_Timekeeper
 
 
         private void _dgvItems_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {            
+        {
             DataGridViewButtonCell projectButton = _dgvItems.Rows[e.RowIndex].Cells[colProjButton.Index] as DataGridViewButtonCell;
             projectButton.Value = "...";
 
@@ -133,7 +131,7 @@ namespace RES_Timekeeper
                 {
                     string text = row.Cells[projectCodeDataGridViewTextBoxColumn.Index].Value.ToString();
                     SizeF size = graphics.MeasureString(text + "m", _dgvItems.DefaultCellStyle.Font);
-                    widestProjectCode = Math.Max(widestProjectCode, (int)(size.Width+0.5));
+                    widestProjectCode = Math.Max(widestProjectCode, (int)(size.Width + 0.5));
                 }
                 graphics.PageUnit = oldUnits;
                 widestProjectCode = Math.Min(widestProjectCode, 500);
@@ -165,22 +163,21 @@ namespace RES_Timekeeper
         private void _dgvItems_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == confirmedDataGridViewCheckBoxColumn.Index)
-                HandleConfirmedCheckboxClick(e);            
+                HandleConfirmedCheckboxClick(e);
         }
 
 
         private void HandleProjectButtonClick(DataGridViewCellEventArgs e)
         {
-            WorkorderSelector frm = new WorkorderSelector();
             ProjectList projects = ProjectList.Load(true);
-            frm.Initialise(projects);
+            WorkorderSelector frm = new WorkorderSelector(projects);
             frm.Owner = this;
 
-            if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (frm.ShowDialog() == DialogResult.OK)
             {
                 for (int i = e.RowIndex; i >= 0; i--)
                 {
-                    _unconfirmedItems.Items[i].ProjectID = frm.SelectedProject.ID;
+                    _unconfirmedItems.Items[i].ProjectID = frm.SelectedProject.Id;
                 }
 
                 _dgvItems.Refresh();

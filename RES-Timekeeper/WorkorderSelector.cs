@@ -16,17 +16,14 @@ namespace RES_Timekeeper
         private ProjectList _projects = null;
         private ProjectList _recentProjects = null;
 
-        public WorkorderSelector()
-        {
-            InitializeComponent();
-            _dgvProjects.SortCompare += new DataGridViewSortCompareEventHandler(_dgvProjects_SortCompare);
-        }
-
-        public void Initialise(ProjectList projects)
+        public WorkorderSelector(ProjectList projects)
         {
             _projects = projects;
 
             _recentProjects = ProjectList.LoadRecentlyUsed();
+
+            InitializeComponent();
+
             if (_recentProjects.Projects.Count > 0)
             {
                 _rbShowRecent.Checked = true;
@@ -35,6 +32,8 @@ namespace RES_Timekeeper
             {
                 _rbShowAll.Checked = true;
             }
+
+            _dgvProjects.SortCompare += new DataGridViewSortCompareEventHandler(_dgvProjects_SortCompare);
         }
 
         void _dgvProjects_SortCompare(object sender, DataGridViewSortCompareEventArgs e)

@@ -101,8 +101,8 @@ namespace RES_Timekeeper
             {
                 if (id > 1) // Skip lunch
                 {
-                    Project p = _projectCache.Projects.Where(proj => proj.ID == id).First();
-                    projectIdCodeTitle.Add(new Tuple<int, string, string>(p.ID, p.Code, p.Title));
+                    Project p = _projectCache.Projects.Where(proj => proj.Id == id).First();
+                    projectIdCodeTitle.Add(new Tuple<int, string, string>(p.Id, p.Code, p.Title));
                 }
             }
             projectIdCodeTitle.Sort((a, b) => a.Item2.CompareTo(b.Item2));

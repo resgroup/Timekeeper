@@ -3,76 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
-using RES_Timekeeper.Base;
 
 namespace RES_Timekeeper.Data
 {
     public class ProjectList
     {
+        public BindingList<Project> Projects { get; }
+
         public ProjectList()
         {
             Projects = new BindingList<Project>();
         }
 
-        public BindingList<Project> Projects
+        public ProjectList(IList<Project> projects)
         {
-            get;
-            private set;
+            Projects = new BindingList<Project>(projects);
         }
 
         public Project GetFromID(int projectID)
         {
-            foreach (Project p in Projects)
-            {
-                if (p.ID == projectID)
-                    return p;
-            }
-
-            return null;
+            return Projects.Where(p => p.Id == projectID).FirstOrDefault();
         }
 
         public void Save()
         {
-            foreach (Project p in Projects)
-            {
-                p.Save();
-            }
+            var list = Projects.ToList();
+            list.ForEach(p => p.Save());
         }
 
         internal static ProjectList LoadRecentlyUsed()
         {
-            Database db = new Database();
-            IEnumerable<ProjectData> data = db.GetMostRecentUsedProjects();
+            var db = new DataService();
+            var data = db.GetMostRecentUsedProjects();
+            var projects = data.Select(p => Project.CreateFromStore(p)).ToList();
 
-            ProjectList newList = new ProjectList();
-            foreach (ProjectData pd in data)
-            {
-                newList.Projects.Add(Project.CreateFromStore(pd));
-            }
-
-            return newList;
+            return new ProjectList(projects);
         }
 
         internal static ProjectList Load(bool visibleProjectsOnly)
         {
-            return Load(visibleProjectsOnly, false);
+            return Load(visibleProjectsOnly, excludeLunch: false);
         }
 
         internal static ProjectList Load(bool visibleProjectsOnly, bool excludeLunch)
         {
-            Database db = new Database();
-            IEnumerable<ProjectData> data = db.GetProjects(visibleProjectsOnly);
+            var db = new DataService();
+            var data = db.GetProjects(visibleProjectsOnly);
 
-            ProjectList newList = new ProjectList();
-            foreach (ProjectData pd in data)
-            {
-                if (!excludeLunch || pd.Code != "LUNCH")
-                {
-                    newList.Projects.Add(Project.CreateFromStore(pd));
-                }
-            }
+            var projects = data.Where(d => !excludeLunch || d.Code != "LUNCH")
+                    .Select(d => Project.CreateFromStore(d))
+                    .ToList();
 
-            return newList;
+            return new ProjectList(projects);
         }
     }
 }

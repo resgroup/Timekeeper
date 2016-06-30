@@ -7,12 +7,12 @@ using System.IO;
 
 namespace RES_Timekeeper.Data
 {
-    public class Database
+    public class DataService
     {
         public string DatabasePath { get; }
 
-        public Database() : this(GetDefaultDatabase()) { }
-        public Database(string databasePath)
+        public DataService() : this(GetDefaultDatabase()) { }
+        public DataService(string databasePath)
         {
             this.DatabasePath = databasePath;
             if (!File.Exists(this.DatabasePath))
@@ -207,16 +207,16 @@ namespace RES_Timekeeper.Data
             }
         }
 
-        public void UpdateProject(int ID, string code, string title, bool visible)
+        public void UpdateProject(ProjectData project)
         {
             string sqlText = "UPDATE tblProjects SET Code=@code, Title=@title, Visible=@visible WHERE ID=@ID";
             using (var connection = GetAndOpenConnection())
             using (var command = new SQLiteCommand(sqlText, connection))
             {
-                command.Parameters.AddWithValue("@code", code);
-                command.Parameters.AddWithValue("@title", title);
-                command.Parameters.AddWithValue("@visible", visible);
-                command.Parameters.AddWithValue("@ID", ID);
+                command.Parameters.AddWithValue("@code", project.Code);
+                command.Parameters.AddWithValue("@title", project.Title);
+                command.Parameters.AddWithValue("@visible", project.Visible);
+                command.Parameters.AddWithValue("@ID", project.ID);
 
                 command.ExecuteNonQuery();
             }

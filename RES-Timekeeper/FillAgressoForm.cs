@@ -65,13 +65,13 @@ namespace RES_Timekeeper
             }
         }
 
-        
+
         private void FillAgresso()
         {
             IHTMLDocument3 doc3 = null;
             try
             {
-                doc3 = IE8.GetTimesheetDocument();
+                doc3 = InternetExplorerUtilities.GetTimesheetDocument();
                 if (doc3 == null)
                 {
                     MessageBox.Show("Can't find Agresso timesheet page. Please check and try again", "Can't find page", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -113,8 +113,8 @@ namespace RES_Timekeeper
         /// </summary>
         public void ProcessLine(int rowIndex, string[] items, IHTMLDocument3 doc3)
         {
-            IE8.SelectAgressoLine(items[0], items[1], doc3);
-            IE8.PushToSelectedLine(rowIndex, items, doc3, _dgvText);
+            InternetExplorerUtilities.SelectAgressoLine(items[0], items[1], doc3);
+            InternetExplorerUtilities.PushToSelectedLine(rowIndex, items, doc3, _dgvText);
         }
     }
 }

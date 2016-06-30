@@ -12,30 +12,32 @@ namespace RES_Timekeeper
 {
     public partial class AddItemForm : Form
     {
-        private DateTime _selectedDay;
+        public DateTime SelectedDay { get; }
+        public string Notes => _tbNotes.Text;
+        public DateTime ItemStart => _dtStart.Value;
+        public DateTime ItemEnd => _dtEnd.Value;
+        public int ProjectID => (int)_lblProjectCode.Tag;
 
         public AddItemForm(DateTime selectedDay)
         {
+            this.SelectedDay = selectedDay;
+
             InitializeComponent();
 
-            _selectedDay = selectedDay;
+            _dtStart.Value = SelectedDay.Date.AddHours(9);
+            _dtStart.MinDate = SelectedDay.Date;
+            _dtStart.MaxDate = SelectedDay.Date.AddMinutes(23 * 60 + 59);
 
-            _dtStart.Value = _selectedDay.Date.AddHours(9);
-            _dtStart.MinDate = _selectedDay.Date;
-            _dtStart.MaxDate = _selectedDay.Date.AddMinutes(23 * 60 + 59);
-
-            _dtEnd.Value = _selectedDay.Date.AddHours(10);
-            _dtEnd.MinDate = _selectedDay.Date.AddMinutes(1);
-            _dtEnd.MaxDate = _selectedDay.Date.AddHours(24);
+            _dtEnd.Value = SelectedDay.Date.AddHours(10);
+            _dtEnd.MinDate = SelectedDay.Date.AddMinutes(1);
+            _dtEnd.MaxDate = SelectedDay.Date.AddHours(24);
 
             CheckTimesForOverlap();
         }
 
         private void CheckTimesForOverlap()
         {
-            bool overlap = EditItemForm.CheckTimesForOverlap(_dtStart.Value, _dtEnd.Value);
-            _lblOverlapWarning.Visible = overlap;
-            _btnOK.Enabled = !overlap && !string.IsNullOrEmpty(_lblProjectCode.Text);
+            _lblOverlapWarning.Visible = EditItemForm.CheckTimesForOverlap(_dtStart.Value, _dtEnd.Value);
         }
 
         private void _dtStart_ValueChanged(object sender, EventArgs e)
@@ -54,39 +56,19 @@ namespace RES_Timekeeper
             CheckTimesForOverlap();
         }
 
-        public string Notes
-        {
-            get { return _tbNotes.Text; }
-        }
 
-        public DateTime ItemStart
-        {
-            get {return _dtStart.Value;}
-        }
-
-        public DateTime ItemEnd
-        {
-            get {return _dtEnd.Value;}
-        }
-
-        public int ProjectID
-        {
-            get { return (int)_lblProjectCode.Tag; }
-        }
-    
         private void _btnProjectBrowse_Click(object sender, EventArgs e)
         {
-            WorkorderSelector frm = new WorkorderSelector();
-            ProjectList projects = ProjectList.Load(true);
-            frm.Initialise(projects);
+            var projects = ProjectList.Load(true);
+            WorkorderSelector frm = new WorkorderSelector(projects);
             frm.Owner = this;
 
-            if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (frm.ShowDialog() == DialogResult.OK)
             {
                 _lblProjectCode.Text = frm.SelectedProject.Code;
-                _lblProjectCode.Tag = frm.SelectedProject.ID;
+                _lblProjectCode.Tag = frm.SelectedProject.Id;
                 CheckTimesForOverlap();
-            }        
+            }
         }
 
         private void _btnOK_Click(object sender, EventArgs e)
@@ -96,7 +78,7 @@ namespace RES_Timekeeper
             newItem.ProjectID = ProjectID;
             newItem.Notes = Notes;
             newItem.Save();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }

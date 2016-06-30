@@ -11,6 +11,7 @@ using Microsoft.Win32;
 using RES_Timekeeper.Data;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Diagnostics;
 
 namespace RES_Timekeeper
 {
@@ -27,7 +28,7 @@ namespace RES_Timekeeper
         public MainForm()
         {
             InitializeComponent();
-            
+
             _itemForm = new TimekeeperForm();
             _itemForm.Visible = _itemForm.UnconfirmedItems.Items.Count > 0;
 
@@ -60,9 +61,11 @@ namespace RES_Timekeeper
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            Item newItem = _periodManager.TimerTick(string.Empty);
+            var newItem = _periodManager.TimerTick(string.Empty);
             if (newItem != null)
+            {
                 _itemForm.DisplayNewUnconfirmedItem(newItem);
+            }
         }
 
 
@@ -109,14 +112,14 @@ namespace RES_Timekeeper
 
         private void OnEditWorkorders(object sender, EventArgs e)
         {
-            WorkorderForm frm = new WorkorderForm();
-            frm.Show();
+            var form = new WorkorderForm();
+            form.Show();
         }
 
         private void OnEditTimes(object sender, EventArgs e)
         {
-            EditDayForm frm = new EditDayForm();
-            frm.Show();
+            var form = new EditDayForm();
+            form.Show();
         }
 
 
@@ -124,11 +127,11 @@ namespace RES_Timekeeper
         {
             _itemForm.SetAllUnconfirmedToLunch();
         }
-        
+
         private void OnDisplaySummary(object sender, EventArgs e)
         {
-            SummaryForm s = new SummaryForm();
-            s.ShowDialog();
+            var form = new SummaryForm();
+            form.ShowDialog();
         }
 
         private void OnPause(object sender, EventArgs e)
@@ -139,26 +142,33 @@ namespace RES_Timekeeper
 
         private void OnHelp(object sender, EventArgs e)
         {
-            string folder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string path = System.IO.Path.Combine(folder, "UserGuide.chm");
-
-            System.Diagnostics.Process.Start(path);
+            string folder = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string path = Path.Combine(folder, "UserGuide.chm");
+            try
+            {
+                Process.Start(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Sorry, we couldn't open the Help. We tried to open the file {path}, but we got the error [{ex.Message}].");
+            }
         }
 
         private void OnRaiseRequest(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://kl-web-001/resSoftware/request_add.asp?softwareID=1310");
+            Process.Start("http://kl-web-001/resSoftware/request_add.asp?softwareID=1310");
         }
 
         private void OnAbout(object sender, EventArgs e)
         {
-            AboutForm frm = new AboutForm();
-            frm.ShowDialog();
+            var form = new AboutForm();
+            form.ShowDialog();
         }
 
         private void OnExit(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure that you want to exit? Really??", "Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            var result = MessageBox.Show("Are you sure that you want to exit? Really??", "Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
                 _timer.Enabled = false;
                 _periodManager.SessionEnding("User chose to exit RES-Timekeeper");

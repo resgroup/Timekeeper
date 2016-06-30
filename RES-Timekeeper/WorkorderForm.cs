@@ -73,7 +73,7 @@ namespace RES_Timekeeper
             IHTMLDocument3 doc3 = null;
             try
             {
-                doc3 = IE8.GetTimesheetDocument();
+                doc3 = InternetExplorerUtilities.GetTimesheetDocument();
                 if (doc3 == null)
                 {
                     MessageBox.Show("Can't find Agresso timesheet page. Please check and try again", "Can't find page", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -81,7 +81,7 @@ namespace RES_Timekeeper
                 else
                 {
                     IEnumerable<string> currentProjectCodes = Projects.Projects.Select(p => p.Code.ToUpper());
-                    IEnumerable<Tuple<string, string>> allCodesAndDescriptions = IE8.GetProjectCodesAndDescriptions(doc3);
+                    IEnumerable<Tuple<string, string>> allCodesAndDescriptions = InternetExplorerUtilities.GetProjectCodesAndDescriptions(doc3);
                     List<Tuple<string, string>> toAdd = new List<Tuple<string, string>>();
 
                     if (currentProjectCodes.Count() == 0)

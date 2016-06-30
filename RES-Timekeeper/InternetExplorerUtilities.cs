@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace RES_Timekeeper
 {
-    public class IE8
+    public class InternetExplorerUtilities
     {
         #region API CALLS
 
@@ -32,17 +32,15 @@ namespace RES_Timekeeper
         public const int SMTO_ABORTIFHUNG = 0x2;
         public static Guid IID_IHTMLDocument2 = new Guid("332C4425-26CB-11D0-B483-00C04FD90119");
         public static Guid IID_IHTMLDocument3 = new Guid("3050F485-98B5-11CF-BB82-00AA00BDCE0B");
-        public static bool IsFrenchAgresso = false;
         #endregion
 
 
-        public static IHTMLDocument2 document2FromDOM()
+        public static IHTMLDocument2 TryGetAgressoOpenedWindow()
         {
-            Process[] processes = Process.GetProcessesByName("iexplore");
-            foreach (Process p in processes)
+            var processes = Process.GetProcessesByName("iexplore");
+            foreach (var process in processes)
             {
-                IHTMLDocument2 document2 = null;
-                IntPtr hWnd = p.MainWindowHandle;
+                IntPtr hWnd = process.MainWindowHandle;
                 int lngMsg = 0;
                 int lRes;
 
@@ -54,17 +52,22 @@ namespace RES_Timekeeper
                     if (lngMsg != 0)
                     {
                         SendMessageTimeout(hWnd, lngMsg, 0, 0, SMTO_ABORTIFHUNG, 1000, out lRes);
-                        if (!(bool)(lRes == 0))
+                        if (lRes != 0)
                         {
+                            IHTMLDocument2 document2 = null;
                             int hr = ObjectFromLresult(lRes, ref IID_IHTMLDocument2, 0, ref document2);
-                            if ((bool)(document2 == null))
+                            if (document2 == null)
+                            {
                                 MessageBox.Show("No IHTMLDocument2 Found!", "Warning");
+                            }
                             else if (!string.IsNullOrEmpty(document2.title))
                             {
-                                IsFrenchAgresso = document2.title.Equals(Properties.Settings.Default.AgressoTitleFR);
-
-                                if (document2.title.Equals(Properties.Settings.Default.AgressoTitle) || IsFrenchAgresso)
+                                bool isFrenchAgresso = document2.title.Equals(Properties.Settings.Default.AgressoTitleFR);
+                                bool isStandardAgresso = document2.title.Equals(Properties.Settings.Default.AgressoTitle);
+                                if (isStandardAgresso || isFrenchAgresso)
+                                {
                                     return document2;
+                                }
                             }
                         }
                     }
@@ -81,7 +84,7 @@ namespace RES_Timekeeper
             StringBuilder classname = new StringBuilder(128);
             GetClassName(hWnd, classname, classname.Capacity);
             /// check if the instance we have found is Internet Explorer_Server
-            if ((bool)(string.Compare(classname.ToString(), "Internet Explorer_Server") == 0))
+            if (string.Compare(classname.ToString(), "Internet Explorer_Server") == 0)
             {
                 lParam = hWnd;
                 retVal = 0;
@@ -265,7 +268,7 @@ namespace RES_Timekeeper
         /// </summary>
         public static List<Tuple<string, string, string>> GetIDsForProjectCode(string code, IHTMLDocument3 doc3)
         {
-            List<Tuple<string, string, string>> projects = new List<Tuple<string, string, string>>();
+            var projects = new List<Tuple<string, string, string>>();
             IHTMLElementCollection allTableCells = null, siblings = null;
             IHTMLElement e = null, s = null, parent = null;
             try
@@ -336,10 +339,11 @@ namespace RES_Timekeeper
             FramesCollection frames = null;
             try
             {
-                htmlDoc = IE8.document2FromDOM();
+                htmlDoc = TryGetAgressoOpenedWindow();
                 if (htmlDoc != null)
+                {
                     frames = htmlDoc.frames;
-
+                }
                 if (frames != null)
                 {
                     var truc = frames.item(0);

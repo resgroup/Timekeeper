@@ -25,7 +25,7 @@ namespace RES_Timekeeper
 
             _itemListBindingSource.DataSource = CurrentItems;
 
-            Database db = new Database();
+            DataService db = new DataService();
             try
             {
                 _lastDisplayDay = db.GetMostRecentItem().EndTime.Date;
@@ -106,14 +106,14 @@ namespace RES_Timekeeper
 
         private void HandleProjectButtonClick(DataGridViewCellEventArgs e)
         {
-            WorkorderSelector frm = new WorkorderSelector();
             ProjectList projects = ProjectList.Load(true);
-            frm.Initialise(projects);
+
+            WorkorderSelector frm = new WorkorderSelector(projects);
             frm.Owner = this;
 
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                CurrentItems.Items[e.RowIndex].ProjectID = frm.SelectedProject.ID;
+                CurrentItems.Items[e.RowIndex].ProjectID = frm.SelectedProject.Id;
 
                 _dgvItems.Refresh();
                 _cachedProjects = ProjectList.Load(false);

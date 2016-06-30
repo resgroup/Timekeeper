@@ -40,7 +40,7 @@
             this._tbNotes = new System.Windows.Forms.TextBox();
             this._lblOverlapWarning = new System.Windows.Forms.Label();
             this._btnCancel = new System.Windows.Forms.Button();
-            this._btnOK = new System.Windows.Forms.Button();
+            this.okButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _dtStart
@@ -155,25 +155,24 @@
             this._btnCancel.Text = "Cancel";
             this._btnCancel.UseVisualStyleBackColor = true;
             // 
-            // _btnOK
+            // okButton
             // 
-            this._btnOK.Enabled = false;
-            this._btnOK.Location = new System.Drawing.Point(146, 113);
-            this._btnOK.Name = "_btnOK";
-            this._btnOK.Size = new System.Drawing.Size(75, 23);
-            this._btnOK.TabIndex = 11;
-            this._btnOK.Text = "OK";
-            this._btnOK.UseVisualStyleBackColor = true;
-            this._btnOK.Click += new System.EventHandler(this._btnOK_Click);
+            this.okButton.Location = new System.Drawing.Point(146, 113);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(75, 23);
+            this.okButton.TabIndex = 11;
+            this.okButton.Text = "OK";
+            this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this._btnOK_Click);
             // 
             // EditItemForm
             // 
-            this.AcceptButton = this._btnOK;
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this._btnCancel;
-            this.ClientSize = new System.Drawing.Size(314, 142);
-            this.Controls.Add(this._btnOK);
+            this.ClientSize = new System.Drawing.Size(322, 153);
+            this.Controls.Add(this.okButton);
             this.Controls.Add(this._btnCancel);
             this.Controls.Add(this._lblOverlapWarning);
             this.Controls.Add(this._tbNotes);
@@ -210,6 +209,6 @@
         private System.Windows.Forms.TextBox _tbNotes;
         private System.Windows.Forms.Label _lblOverlapWarning;
         private System.Windows.Forms.Button _btnCancel;
-        private System.Windows.Forms.Button _btnOK;
+        private System.Windows.Forms.Button okButton;
     }
 }

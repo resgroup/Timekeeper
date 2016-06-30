@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using RES_Timekeeper.Base;
-
 namespace RES_Timekeeper.Data
 {
-    public class Item : IDatabaseObject, IComparable
+    public class Item : IComparable
     {
         private bool _isDeleted = false;
 
@@ -36,17 +34,18 @@ namespace RES_Timekeeper.Data
 
         public static Item CreateFromStore(ItemData data)
         {
-            Item loadedItem = new Item();
-            loadedItem.ProjectID = data.ProjectID;
-            loadedItem.StartTime = data.StartTime;
-            loadedItem.EndTime = data.EndTime;
-            loadedItem._originalStartTime = data.StartTime;
-            loadedItem._originalEndTime = data.EndTime;
-            loadedItem.Confirmed = data.Confirmed;
-            loadedItem.Notes = data.Notes;
-            loadedItem.IsNew = false;
-            loadedItem.IsDirty = false;
-            return loadedItem;
+            return new Item
+            {
+                ProjectID = data.ProjectID,
+                StartTime = data.StartTime,
+                EndTime = data.EndTime,
+                _originalStartTime = data.StartTime,
+                _originalEndTime = data.EndTime,
+                Confirmed = data.Confirmed,
+                Notes = data.Notes,
+                IsNew = false,
+                IsDirty = false
+            };
         }
 
         public int ProjectID
@@ -101,19 +100,19 @@ namespace RES_Timekeeper.Data
 
         public static Item CreateNewItem(DateTime startTime, DateTime endTime)
         {
-            Item i = new Item();
-            i.ProjectID = 1;
-            i.StartTime = startTime;
-            i.EndTime = endTime;
-            i.Confirmed = false;
-            i.Notes = string.Empty;
-
-            return i;
+            return new Item
+            {
+                ProjectID = 1,
+                StartTime = startTime,
+                EndTime = endTime,
+                Confirmed = false,
+                Notes = string.Empty
+            };
         }
 
         public static Item GetMostRecentItem()
         {
-            Database db = new Database();
+            DataService db = new DataService();
             ItemData data = db.GetMostRecentItem();
             if (data == null)
                 return null;
@@ -125,7 +124,7 @@ namespace RES_Timekeeper.Data
         {
             if (IsDirty)
             {
-                Database db = new Database();
+                DataService db = new DataService();
                 if (IsNew)
                 {
                     db.InsertItem(ProjectID, StartTime, EndTime, Confirmed, Notes);
@@ -148,17 +147,9 @@ namespace RES_Timekeeper.Data
             }
         }
 
-        public bool IsDirty
-        {
-            get;
-            private set;
-        }
+        public bool IsDirty { get; private set; }
 
-        public bool IsNew
-        {
-            get;
-            private set;
-        }
+        public bool IsNew { get; private set; }
 
         public bool IsDeleted
         {
@@ -177,7 +168,15 @@ namespace RES_Timekeeper.Data
 
         public int CompareTo(object obj)
         {
-            return this.StartTime.CompareTo(((Item)obj).StartTime);
+            var item = obj as Item;
+            if (item != null)
+            {
+                return this.StartTime.CompareTo(item.StartTime);
+            }
+            else
+            {
+                return -1;
+            }
         }
     }
 }

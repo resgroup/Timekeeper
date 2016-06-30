@@ -36,7 +36,7 @@ namespace RES_Timekeeper
 
             ProjectList projects = ProjectList.Load(true);
             _lblProjectCode.Text = projects.GetFromID(_editItem.ProjectID).Code;
-            _lblProjectCode.Tag = projects.GetFromID(_editItem.ProjectID).ID;
+            _lblProjectCode.Tag = projects.GetFromID(_editItem.ProjectID).Id;
 
             _tbNotes.Text = _editItem.Notes;
 
@@ -45,9 +45,7 @@ namespace RES_Timekeeper
 
         private void CheckTimesForOverlap()
         {
-            bool overlap = CheckTimesForOverlapNotCurrent(_dtStart.Value, _dtEnd.Value);
-            _lblOverlapWarning.Visible = overlap;
-            _btnOK.Enabled = !overlap && !string.IsNullOrEmpty(_lblProjectCode.Text);
+            _lblOverlapWarning.Visible = CheckTimesForOverlapNotCurrent(_dtStart.Value, _dtEnd.Value);
         }
 
 
@@ -76,34 +74,29 @@ namespace RES_Timekeeper
 
         public bool CheckTimesForOverlapNotCurrent(DateTime userStart, DateTime userEnd)
         {
-            ItemList daysItems = ItemList.Load(userStart.Date, userStart.Date.AddDays(1));
-            foreach (var i in daysItems.Items)
-            {
-                if (i.StartTime == _originalStart  && i.EndTime == _originalEnd)
-                {
-                    daysItems.Items.Remove(i);
-                    break;
-                }
-            }
+            var daysItems = ItemList.Load(userStart.Date, userStart.Date.AddDays(1));
             daysItems.RoundTimesToTheMinute();
 
-            bool overlap = false;
-            foreach (var i in daysItems.Items)
+            foreach (var item in daysItems.Items)
             {
-                if (i.StartTime >= userEnd || i.EndTime <= userStart)
-                    overlap = false;
-                else if (i.StartTime > userStart && i.StartTime < userEnd)
-                    overlap = true;
-                else if (i.EndTime > userStart && i.EndTime < userEnd)
-                    overlap = true;
-                else if (i.StartTime < userStart && i.EndTime > userEnd)
-                    overlap = true;
-
-                if (overlap)
-                    break;
+                if (item.StartTime >= userEnd || item.EndTime <= userStart)
+                {
+                }
+                else if (item.StartTime > userStart && item.StartTime < userEnd)
+                {
+                    return true;
+                }
+                else if (item.EndTime > userStart && item.EndTime < userEnd)
+                {
+                    return true;
+                }
+                else if (item.StartTime < userStart && item.EndTime > userEnd)
+                {
+                    return true;
+                }
             }
 
-            return overlap;
+            return false;
         }
 
         private void _dtStart_ValueChanged(object sender, EventArgs e)
@@ -129,32 +122,32 @@ namespace RES_Timekeeper
 
         public DateTime ItemStart
         {
-            get {return _dtStart.Value;}
+            get { return _dtStart.Value; }
         }
 
         public DateTime ItemEnd
         {
-            get {return _dtEnd.Value;}
+            get { return _dtEnd.Value; }
         }
 
         public int ProjectID
         {
             get { return (int)_lblProjectCode.Tag; }
         }
-    
+
         private void _btnProjectBrowse_Click(object sender, EventArgs e)
         {
-            WorkorderSelector frm = new WorkorderSelector();
-            ProjectList projects = ProjectList.Load(true);
-            frm.Initialise(projects);
+            var projects = ProjectList.Load(true);
+
+            var frm = new WorkorderSelector(projects);
             frm.Owner = this;
 
-            if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (frm.ShowDialog() == DialogResult.OK)
             {
                 _lblProjectCode.Text = frm.SelectedProject.Code;
-                _lblProjectCode.Tag = frm.SelectedProject.ID;
+                _lblProjectCode.Tag = frm.SelectedProject.Id;
                 CheckTimesForOverlap();
-            }        
+            }
         }
 
         private void _btnOK_Click(object sender, EventArgs e)
@@ -164,7 +157,7 @@ namespace RES_Timekeeper
             _editItem.ProjectID = ProjectID;
             _editItem.Notes = Notes;
             _editItem.Save();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }
