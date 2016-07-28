@@ -1,0 +1,4 @@
+[submodule "ReportingEngineCore"]
+	path = ReportingTools/ReportingEngineCore
+	url = https://github.com/resgroup/reporting-engine.git
+	branch = master
