@@ -10,17 +10,14 @@ namespace RES_Timekeeper
     {
         private DateTime _currentPeriodStartTime;
 
-#if DEBUG
-        private const int MINUTES_IN_PERIOD = 1;
-#else
-        private const int MINUTES_IN_PERIOD = 15;
-#endif
-        private const int MINIMUM_SECONDS_IN_PERIOD = (int)(MINUTES_IN_PERIOD * 60 * 0.2);
         private const int LUNCH_PROJECTID = 1;
 
         public bool Paused { get; set; }
-        public TimePeriodManager()
+        public TimePeriodManager(OptionsForm.TimeTrackingLevels timeLevel)
         {
+            TimingInterval = timeLevel;
+            Paused = false;
+
             // If we're being constructed within MINUTES_IN_PERIOD of the end of the last period
             // then we'll start this period at the end of the end of the last period. This covers
             // the case of a quick reboot; it's thus recorded as continual working
@@ -33,7 +30,6 @@ namespace RES_Timekeeper
             {
                 _currentPeriodStartTime = DateTime.Now;
             }
-            Paused = false;
         }
 
 
@@ -49,7 +45,7 @@ namespace RES_Timekeeper
             {
                 // OK - we're beyond the end of the period, and the period is longer than 20% of the standard length
                 // (avoid short periods just after starting up). So create and save a new period
-                if (IsPeriodOutOfWorkingHours() || Paused)
+                if (Paused)
                 {
                     // Don't create a new period - let the current one extend on as we're out of hours
                 }
@@ -110,12 +106,6 @@ namespace RES_Timekeeper
             return nowDate;
         }
 
-        private bool IsPeriodOutOfWorkingHours()
-        {
-            // Working hours are from 8AM to 8PM
-            var now = DateTime.Now;
-            return (_currentPeriodStartTime.TimeOfDay.TotalHours > 20 && (now.Date == _currentPeriodStartTime.Date || now.TimeOfDay.TotalHours < 8.02));
-        }
 
         private Item CreateAndSaveNewItem(string description, int projectIDForPeriod)
         {
@@ -134,6 +124,36 @@ namespace RES_Timekeeper
         {
             var lastItem = Item.GetMostRecentItem();
             return CreateAndSaveNewItem(description, lastItem != null ? lastItem.ProjectID : LUNCH_PROJECTID);
+        }
+
+        private int MINIMUM_SECONDS_IN_PERIOD
+        {
+            get
+            {
+                return (int)(MINUTES_IN_PERIOD * 60 * 0.2);
+            }
+        }
+
+        public OptionsForm.TimeTrackingLevels TimingInterval
+        {
+            get;
+            set;
+        }
+
+
+        public int MINUTES_IN_PERIOD
+        {
+            get
+            {
+                switch (TimingInterval)
+                {
+                    case OptionsForm.TimeTrackingLevels.M1:  return  1;
+                    case OptionsForm.TimeTrackingLevels.M15: return 15;
+                    case OptionsForm.TimeTrackingLevels.M30: return 30;
+                    case OptionsForm.TimeTrackingLevels.H1:  return 60;
+                }
+                return 15;
+            }
         }
     }
 }

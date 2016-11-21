@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Win32;
-
-using RES_Timekeeper.Data;
-using System.Runtime.InteropServices;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace RES_Timekeeper
 {
     public partial class MainForm : Form
     {
-        private TimePeriodManager _periodManager = new TimePeriodManager();
+        private TimePeriodManager _periodManager = new TimePeriodManager((OptionsForm.TimeTrackingLevels)(Properties.Settings.Default.TimeInterval));
         private TimekeeperForm _itemForm;
         private MenuItem _pauseMenuItem;
 
@@ -44,6 +35,7 @@ namespace RES_Timekeeper
             _pauseMenuItem = _trayMenu.MenuItems.Add("Pause", OnPause);
             _pauseMenuItem.Checked = false;
             _trayMenu.MenuItems.Add("-");
+            _trayMenu.MenuItems.Add("Options...", OnOptions);
             _trayMenu.MenuItems.Add("Help", OnHelp);
             _trayMenu.MenuItems.Add("Raise Request", OnRaiseRequest);
             _trayMenu.MenuItems.Add("About RES-TimeKeeper", OnAbout);
@@ -138,6 +130,18 @@ namespace RES_Timekeeper
         {
             _periodManager.Paused = !_periodManager.Paused;
             _pauseMenuItem.Checked = _periodManager.Paused;
+        }
+
+        private void OnOptions(object sender, EventArgs e)
+        {
+            var form = new OptionsForm();
+            form.SelectedTimeTrackingLevel = (OptionsForm.TimeTrackingLevels)(Properties.Settings.Default.TimeInterval);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                _periodManager.TimingInterval = form.SelectedTimeTrackingLevel;
+                Properties.Settings.Default.TimeInterval = (int)(form.SelectedTimeTrackingLevel);
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void OnHelp(object sender, EventArgs e)

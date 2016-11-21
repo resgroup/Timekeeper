@@ -14,5 +14,8 @@
     <Setting Name="AgressoCulture" Type="System.String" Scope="User">
       <Value Profile="(Default)">en-UK</Value>
     </Setting>
+    <Setting Name="TimeInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

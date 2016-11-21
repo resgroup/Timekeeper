@@ -53,7 +53,7 @@ namespace RES_Timekeeper
             catch (Exception ex)
             {
 #if DEBUG
-                MessageBox.Show("Error in session logging\n" + ex.ToString(), "Session logging", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Error in session logging\n" + ex.ToString(), "Session logging", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #endif
             }
         }

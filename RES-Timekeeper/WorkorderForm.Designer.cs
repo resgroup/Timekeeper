@@ -31,14 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorkorderForm));
             this._dataGridView = new System.Windows.Forms.DataGridView();
-            this.Visible = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.projectListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this._btnCancel = new System.Windows.Forms.Button();
             this._btnSave = new System.Windows.Forms.Button();
             this._btnGetFromAgresso = new System.Windows.Forms.Button();
-            this.codeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.projectListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.deleteButton = new System.Windows.Forms.Button();
+            this.visibleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.codeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this._dataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectListBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +53,7 @@
             this._dataGridView.AutoGenerateColumns = false;
             this._dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Visible,
+            this.visibleDataGridViewTextBoxColumn,
             this.codeDataGridViewTextBoxColumn,
             this.Title});
             this._dataGridView.DataMember = "Projects";
@@ -68,20 +68,9 @@
             this._dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this._dataGridView_CellEndEdit);
             this._dataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this._dataGridView_DataBindingComplete);
             // 
-            // Visible
+            // projectListBindingSource
             // 
-            this.Visible.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Visible.DataPropertyName = "Visible";
-            this.Visible.HeaderText = "Visible";
-            this.Visible.Name = "Visible";
-            this.Visible.Width = 43;
-            // 
-            // Title
-            // 
-            this.Title.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Title.DataPropertyName = "Title";
-            this.Title.HeaderText = "Description";
-            this.Title.Name = "Title";
+            this.projectListBindingSource.DataSource = typeof(RES_Timekeeper.Data.ProjectList);
             // 
             // _btnCancel
             // 
@@ -117,19 +106,6 @@
             this._btnGetFromAgresso.UseVisualStyleBackColor = true;
             this._btnGetFromAgresso.Click += new System.EventHandler(this._btnGetFromAgresso_Click);
             // 
-            // codeDataGridViewTextBoxColumn
-            // 
-            this.codeDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.codeDataGridViewTextBoxColumn.DataPropertyName = "Code";
-            this.codeDataGridViewTextBoxColumn.HeaderText = "Code";
-            this.codeDataGridViewTextBoxColumn.MaxInputLength = 16;
-            this.codeDataGridViewTextBoxColumn.Name = "codeDataGridViewTextBoxColumn";
-            this.codeDataGridViewTextBoxColumn.Width = 57;
-            // 
-            // projectListBindingSource
-            // 
-            this.projectListBindingSource.DataSource = typeof(RES_Timekeeper.Data.ProjectList);
-            // 
             // deleteButton
             // 
             this.deleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -140,6 +116,30 @@
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            // 
+            // visibleDataGridViewTextBoxColumn
+            // 
+            this.visibleDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.visibleDataGridViewTextBoxColumn.DataPropertyName = "Visible";
+            this.visibleDataGridViewTextBoxColumn.HeaderText = "Visible";
+            this.visibleDataGridViewTextBoxColumn.Name = "visibleDataGridViewTextBoxColumn";
+            this.visibleDataGridViewTextBoxColumn.Width = 43;
+            // 
+            // codeDataGridViewTextBoxColumn
+            // 
+            this.codeDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.codeDataGridViewTextBoxColumn.DataPropertyName = "Code";
+            this.codeDataGridViewTextBoxColumn.HeaderText = "Code";
+            this.codeDataGridViewTextBoxColumn.MaxInputLength = 16;
+            this.codeDataGridViewTextBoxColumn.Name = "codeDataGridViewTextBoxColumn";
+            this.codeDataGridViewTextBoxColumn.Width = 57;
+            // 
+            // Title
+            // 
+            this.Title.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Title.DataPropertyName = "Title";
+            this.Title.HeaderText = "Description";
+            this.Title.Name = "Title";
             // 
             // WorkorderForm
             // 
@@ -173,11 +173,10 @@
         private System.Windows.Forms.Button _btnSave;
         private System.Windows.Forms.BindingSource projectListBindingSource;
         private System.Windows.Forms.Button _btnGetFromAgresso;
-        private System.Windows.Forms.DataGridViewTextBoxColumn titleDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Visible;
+        private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn visibleDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn codeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Title;
-        private System.Windows.Forms.Button deleteButton;
     }
 }
 
