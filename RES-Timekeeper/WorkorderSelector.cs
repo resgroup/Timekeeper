@@ -178,10 +178,13 @@ namespace RES_Timekeeper
 
             foreach (var p in _projects.Projects)
             {
-                rowVals[0] = p.Code;
-                rowVals[1] = p.Title;
-                int index = _dgvProjects.Rows.Add(rowVals);
-                _dgvProjects.Rows[index].Tag = p;
+                if (PassesFilter(p))
+                {
+                    rowVals[0] = p.Code;
+                    rowVals[1] = p.Title;
+                    int index = _dgvProjects.Rows.Add(rowVals);
+                    _dgvProjects.Rows[index].Tag = p;
+                }
             }
 
             if (Properties.Settings.Default.SortWorkOrdersAlphabetically)
@@ -198,11 +201,26 @@ namespace RES_Timekeeper
 
             foreach (var p in _recentProjects.Projects)
             {
-                rowVals[0] = p.Code;
-                rowVals[1] = p.Title;
-                int index = _dgvProjects.Rows.Add(rowVals);
-                _dgvProjects.Rows[index].Tag = p;
+                if (PassesFilter(p))
+                {
+                    rowVals[0] = p.Code;
+                    rowVals[1] = p.Title;
+                    int index = _dgvProjects.Rows.Add(rowVals);
+                    _dgvProjects.Rows[index].Tag = p;
+                }
             }
+        }
+
+        private bool PassesFilter(Project p)
+        {
+            if (_tbFilter.TextLength > 0)
+            {
+                string filterL = _tbFilter.Text.ToLower();
+                string projectL = p.Title.ToLower();
+                return projectL.Contains(filterL);
+            }
+            else
+                return true;
         }
 
 
@@ -217,12 +235,13 @@ namespace RES_Timekeeper
             FillGridWithRecent();
         }
 
-        private void deleteButton_Click(object sender, EventArgs e)
-        {
-            foreach (var row in _dgvProjects.SelectedRows)
-            {
 
-            }
+        private void _tbFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_rbShowAll.Checked)
+                FillGridWithAll();
+            else
+                FillGridWithRecent();
         }
     }
 }

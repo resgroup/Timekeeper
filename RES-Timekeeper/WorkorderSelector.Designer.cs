@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this._btnCancel = new System.Windows.Forms.Button();
             this._btnOK = new System.Windows.Forms.Button();
             this._btnEdit = new System.Windows.Forms.Button();
@@ -38,6 +38,8 @@
             this.colProjectTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this._rbShowAll = new System.Windows.Forms.RadioButton();
             this._rbShowRecent = new System.Windows.Forms.RadioButton();
+            this._tbFilter = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._dgvProjects)).BeginInit();
             this.SuspendLayout();
             // 
@@ -89,7 +91,7 @@
             this.colProjectCode,
             this.colProjectTitle});
             this._dgvProjects.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this._dgvProjects.Location = new System.Drawing.Point(0, 20);
+            this._dgvProjects.Location = new System.Drawing.Point(0, 21);
             this._dgvProjects.MultiSelect = false;
             this._dgvProjects.Name = "_dgvProjects";
             this._dgvProjects.ReadOnly = true;
@@ -97,7 +99,7 @@
             this._dgvProjects.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._dgvProjects.RowTemplate.Height = 17;
             this._dgvProjects.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this._dgvProjects.Size = new System.Drawing.Size(446, 212);
+            this._dgvProjects.Size = new System.Drawing.Size(446, 211);
             this._dgvProjects.TabIndex = 4;
             this._dgvProjects.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this._dgvProjects_CellDoubleClick);
             this._dgvProjects.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this._dgvProjects_ColumnHeaderMouseClick);
@@ -107,8 +109,8 @@
             // colProjectCode
             // 
             this.colProjectCode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.colProjectCode.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colProjectCode.DefaultCellStyle = dataGridViewCellStyle1;
             this.colProjectCode.HeaderText = "Code";
             this.colProjectCode.Name = "colProjectCode";
             this.colProjectCode.ReadOnly = true;
@@ -118,8 +120,8 @@
             // colProjectTitle
             // 
             this.colProjectTitle.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.colProjectTitle.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colProjectTitle.DefaultCellStyle = dataGridViewCellStyle2;
             this.colProjectTitle.HeaderText = "Workorder";
             this.colProjectTitle.MinimumWidth = 50;
             this.colProjectTitle.Name = "colProjectTitle";
@@ -148,6 +150,25 @@
             this._rbShowRecent.UseVisualStyleBackColor = true;
             this._rbShowRecent.CheckedChanged += new System.EventHandler(this._rbShowRecent_CheckedChanged);
             // 
+            // _tbFilter
+            // 
+            this._tbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._tbFilter.Location = new System.Drawing.Point(318, 0);
+            this._tbFilter.Name = "_tbFilter";
+            this._tbFilter.Size = new System.Drawing.Size(128, 20);
+            this._tbFilter.TabIndex = 6;
+            this._tbFilter.TextChanged += new System.EventHandler(this._tbFilter_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Location = new System.Drawing.Point(262, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 20);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Filter:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // WorkorderSelector
             // 
             this.AcceptButton = this._btnOK;
@@ -155,6 +176,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this._btnCancel;
             this.ClientSize = new System.Drawing.Size(446, 262);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this._tbFilter);
             this.Controls.Add(this._rbShowRecent);
             this.Controls.Add(this._rbShowAll);
             this.Controls.Add(this._dgvProjects);
@@ -170,6 +193,7 @@
             this.Load += new System.EventHandler(this.ProjectSelector_Load);
             ((System.ComponentModel.ISupportInitialize)(this._dgvProjects)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -183,5 +207,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colProjectTitle;
         private System.Windows.Forms.RadioButton _rbShowAll;
         private System.Windows.Forms.RadioButton _rbShowRecent;
+        private System.Windows.Forms.TextBox _tbFilter;
+        private System.Windows.Forms.Label label1;
     }
 }
