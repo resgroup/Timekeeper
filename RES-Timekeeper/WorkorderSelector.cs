@@ -141,6 +141,7 @@ namespace RES_Timekeeper
             {
                 _projects = ProjectList.Load(true);
                 _rbShowAll.Checked = true;
+                RepopulateGrid();
             }
         }
 
@@ -226,17 +227,22 @@ namespace RES_Timekeeper
 
         private void _rbShowAll_CheckedChanged(object sender, EventArgs e)
         {
-            FillGridWithAll();
+            RepopulateGrid();
         }
 
 
         private void _rbShowRecent_CheckedChanged(object sender, EventArgs e)
         {
-            FillGridWithRecent();
+            RepopulateGrid();
         }
 
 
         private void _tbFilter_TextChanged(object sender, EventArgs e)
+        {
+            RepopulateGrid();
+        }
+
+        private void RepopulateGrid()
         {
             if (_rbShowAll.Checked)
                 FillGridWithAll();
