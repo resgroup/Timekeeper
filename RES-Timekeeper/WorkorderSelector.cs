@@ -13,13 +13,12 @@ namespace RES_Timekeeper
     public partial class WorkorderSelector : Form
     {
         private Project _selectedProject = null;
-        private ProjectList _projects = null;
+        private ProjectList _allProjects = null;
         private ProjectList _recentProjects = null;
 
-        public WorkorderSelector(ProjectList projects)
+        public WorkorderSelector(ProjectList allProjects)
         {
-            _projects = projects;
-
+            _allProjects = allProjects;
             _recentProjects = ProjectList.LoadRecentlyUsed();
 
             InitializeComponent();
@@ -57,7 +56,7 @@ namespace RES_Timekeeper
         }
 
 
-        private int ProjectCodeSort(string a, string b, SortOrder s)
+        public static int ProjectCodeSort(string a, string b, SortOrder s)
         {
             if (a == "LUNCH" || b == "LUNCH")
             {
@@ -139,7 +138,7 @@ namespace RES_Timekeeper
             frm.Owner = this;
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                _projects = ProjectList.Load(true);
+                _allProjects = ProjectList.Load(true);
                 _rbShowAll.Checked = true;
                 RepopulateGrid();
             }
@@ -172,17 +171,32 @@ namespace RES_Timekeeper
         }
 
 
+        private void FillGridWithArchived()
+        {
+            IList<Project> archivedProjects = _allProjects.Projects.Where(p => !p.Visible).ToList();
+            AddProjectToGrid(archivedProjects);
+        }
+
         private void FillGridWithAll()
         {
-            _dgvProjects.Rows.Clear();
-            object[] rowVals = new object[2];
+            IList<Project> visibleProjects = _allProjects.Projects.Where(p => p.Visible).ToList();
+            AddProjectToGrid(visibleProjects);
+        }
 
-            foreach (var p in _projects.Projects)
+        private void FillGridWithRecent()
+        {
+            AddProjectToGrid(_recentProjects.Projects);
+        }
+
+        private void AddProjectToGrid(IList<Project> projects)
+        {
+            _dgvProjects.Rows.Clear();
+
+            foreach (var p in projects)
             {
                 if (PassesFilter(p))
                 {
-                    rowVals[0] = p.Code;
-                    rowVals[1] = p.Title;
+                    object[] rowVals = new object[2] { p.Code, p.Title };
                     int index = _dgvProjects.Rows.Add(rowVals);
                     _dgvProjects.Rows[index].Tag = p;
                 }
@@ -192,24 +206,6 @@ namespace RES_Timekeeper
                 _dgvProjects.Sort(colProjectTitle, ListSortDirection.Ascending);
             else
                 _dgvProjects.Sort(colProjectCode, ListSortDirection.Ascending);
-        }
-
-
-        private void FillGridWithRecent()
-        {
-            _dgvProjects.Rows.Clear();
-            object[] rowVals = new object[2];
-
-            foreach (var p in _recentProjects.Projects)
-            {
-                if (PassesFilter(p))
-                {
-                    rowVals[0] = p.Code;
-                    rowVals[1] = p.Title;
-                    int index = _dgvProjects.Rows.Add(rowVals);
-                    _dgvProjects.Rows[index].Tag = p;
-                }
-            }
         }
 
         private bool PassesFilter(Project p)
@@ -242,12 +238,19 @@ namespace RES_Timekeeper
             RepopulateGrid();
         }
 
+        private void _rbShowArchived_CheckedChanged(object sender, EventArgs e)
+        {
+            RepopulateGrid();
+        }
+
         private void RepopulateGrid()
         {
             if (_rbShowAll.Checked)
                 FillGridWithAll();
-            else
+            else if (_rbShowRecent.Checked)
                 FillGridWithRecent();
+            else
+                FillGridWithArchived();
         }
     }
 }

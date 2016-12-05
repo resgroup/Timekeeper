@@ -36,7 +36,7 @@
             this._btnSave = new System.Windows.Forms.Button();
             this._btnGetFromAgresso = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
-            this.visibleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.archivedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.codeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this._dataGridView)).BeginInit();
@@ -53,7 +53,7 @@
             this._dataGridView.AutoGenerateColumns = false;
             this._dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this._dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.visibleDataGridViewTextBoxColumn,
+            this.archivedDataGridViewTextBoxColumn,
             this.codeDataGridViewTextBoxColumn,
             this.Title});
             this._dataGridView.DataMember = "Projects";
@@ -117,13 +117,14 @@
             this.deleteButton.UseVisualStyleBackColor = true;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
-            // visibleDataGridViewTextBoxColumn
+            // archivedDataGridViewTextBoxColumn
             // 
-            this.visibleDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.visibleDataGridViewTextBoxColumn.DataPropertyName = "Visible";
-            this.visibleDataGridViewTextBoxColumn.HeaderText = "Visible";
-            this.visibleDataGridViewTextBoxColumn.Name = "visibleDataGridViewTextBoxColumn";
-            this.visibleDataGridViewTextBoxColumn.Width = 43;
+            this.archivedDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.archivedDataGridViewTextBoxColumn.DataPropertyName = "Archived";
+            this.archivedDataGridViewTextBoxColumn.HeaderText = "Archived";
+            this.archivedDataGridViewTextBoxColumn.Name = "archivedDataGridViewTextBoxColumn";
+            this.archivedDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.archivedDataGridViewTextBoxColumn.Width = 74;
             // 
             // codeDataGridViewTextBoxColumn
             // 
@@ -174,7 +175,7 @@
         private System.Windows.Forms.BindingSource projectListBindingSource;
         private System.Windows.Forms.Button _btnGetFromAgresso;
         private System.Windows.Forms.Button deleteButton;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn visibleDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn archivedDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn codeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Title;
     }

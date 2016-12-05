@@ -46,6 +46,14 @@ namespace RES_Timekeeper.Data
                 IsDirty = true;
             }
         }
+        public bool Archived
+        {
+            get { return !Visible; }
+            set
+            {
+                Visible = !value;
+            }
+        }
 
         public bool IsNew { get; private set; }
 

@@ -59,7 +59,7 @@ namespace RES_Timekeeper
 
         private void _btnProjectBrowse_Click(object sender, EventArgs e)
         {
-            var projects = ProjectList.Load(true);
+            var projects = ProjectList.Load(false);
             WorkorderSelector frm = new WorkorderSelector(projects);
             frm.Owner = this;
 

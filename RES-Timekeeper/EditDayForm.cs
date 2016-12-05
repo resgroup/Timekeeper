@@ -106,7 +106,7 @@ namespace RES_Timekeeper
 
         private void HandleProjectButtonClick(DataGridViewCellEventArgs e)
         {
-            ProjectList projects = ProjectList.Load(true);
+            ProjectList projects = ProjectList.Load(false);
 
             WorkorderSelector frm = new WorkorderSelector(projects);
             frm.Owner = this;

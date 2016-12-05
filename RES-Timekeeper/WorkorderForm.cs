@@ -23,6 +23,8 @@ namespace RES_Timekeeper
             InitializeComponent();
             projectListBindingSource.DataSource = projects;
             Projects = projects;
+
+            _dataGridView.SortCompare += new DataGridViewSortCompareEventHandler(_dataGridView_SortCompare);
         }
 
 
@@ -146,5 +148,26 @@ namespace RES_Timekeeper
 
             projects.ForEach(project => project.MarkDeleted());
         }
+
+        private void _dataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            string a = e.CellValue1.ToString();
+            string b = e.CellValue2.ToString();
+
+            if (_dataGridView.SortedColumn.Index == codeDataGridViewTextBoxColumn.Index)
+            {
+                try
+                {
+                    e.SortResult = WorkorderSelector.ProjectCodeSort(a, b, _dataGridView.SortOrder);
+                    e.Handled = true;
+                    return;
+                }
+                catch { }
+            }
+
+            e.SortResult = string.Compare(a, b);
+            e.Handled = true;
+        }
+
     }
 }

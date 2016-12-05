@@ -145,6 +145,7 @@
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SessionLogger.cs" />
+    <Compile Include="SortableBindingList.cs" />
     <Compile Include="WorkorderForm.cs">
       <SubType>Form</SubType>
     </Compile>

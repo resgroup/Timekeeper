@@ -8,16 +8,16 @@ namespace RES_Timekeeper.Data
 {
     public class ProjectList
     {
-        public BindingList<Project> Projects { get; }
+        public SortableBindingList<Project> Projects { get; }
 
         public ProjectList()
         {
-            Projects = new BindingList<Project>();
+            Projects = new SortableBindingList<Project>();
         }
 
         public ProjectList(IList<Project> projects)
         {
-            Projects = new BindingList<Project>(projects);
+            Projects = new SortableBindingList<Project>(projects);
         }
 
         public Project GetFromID(int projectID)
