@@ -1,0 +1,4 @@
+before_build:
+ - nuget restore "RES-Timekeeper.sln" -verbosity quiet
+build:
+  project: RES-Timekeeper.sln
