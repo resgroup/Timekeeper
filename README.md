@@ -4,6 +4,6 @@
 
 This is an application to help recordhours worked
 
-Every 15 minutes a notification pops up, and you click on the task that you are working on.
+Every 15 minutes a notification pops up, and you click on the task that you are working on
 
-It started life as an internal project at RES, to make filling in time sheets easier.
+It started life as an internal project at RES, to make filling in time sheets easier
