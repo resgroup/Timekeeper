@@ -1,1 +1,0 @@
-@powershell "%~dp0SetupWorkspace.ps1"
