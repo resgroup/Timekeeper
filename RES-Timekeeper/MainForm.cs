@@ -37,7 +37,6 @@ namespace RES_Timekeeper
             _trayMenu.MenuItems.Add("-");
             _trayMenu.MenuItems.Add("Options...", OnOptions);
             _trayMenu.MenuItems.Add("Help", OnHelp);
-            _trayMenu.MenuItems.Add("Raise Request", OnRaiseRequest);
             _trayMenu.MenuItems.Add("About RES-TimeKeeper", OnAbout);
             _trayMenu.MenuItems.Add("-");
             _trayMenu.MenuItems.Add("Quit", OnExit);
@@ -156,11 +155,6 @@ namespace RES_Timekeeper
             {
                 MessageBox.Show($"Sorry, we couldn't open the Help. We tried to open the file {path}, but we got the error [{ex.Message}].");
             }
-        }
-
-        private void OnRaiseRequest(object sender, EventArgs e)
-        {
-            Process.Start("http://kl-web-001/resSoftware/request_add.asp?softwareID=1310");
         }
 
         private void OnAbout(object sender, EventArgs e)
