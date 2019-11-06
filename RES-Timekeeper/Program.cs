@@ -31,18 +31,23 @@ namespace RES_Timekeeper
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 // add a lot of comments so that the function length is longer than code climat likes
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
+                // actually this doesn't work, maybe it needs to be code, as opposed to comments
+                int a = 0;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
+                a += 1;
 
                 // it looks like this line could be deleted, but it is required for some reason.
                 // If you don't have, the icon doesn't appear in the system tray
